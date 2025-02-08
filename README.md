@@ -1,7 +1,7 @@
 # Assesment2
 
 <div align="center">
-  <img src="logo.png" alt="logo" width="150" height="100" style="display: inline;">
+  <img src="logo_kobra.png" alt="logo" width="155" height="168" style="display: inline;">
 </div>
 
 
