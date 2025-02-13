@@ -1,17 +1,20 @@
 [
     {
-        "question": "What is the capital of France?",
-        "options": ["Berlin", "Madrid", "Paris", "Rome"],
-        "correct_answer": "3"
+      "category": "Geography",
+      "question": "What is the capital of France?",
+      "options": ["Berlin", "Madrid", "Paris", "Rome"],
+      "correct_answer": "3"
     },
     {
-        "question": "What is 2 + 2?",
-        "options": ["3", "4", "5", "6"],
-        "correct_answer": "2"
+      "category": "Maths",
+      "question": "What is 2 + 2?",
+      "options": ["3", "4", "5", "6"],
+      "correct_answer": "2"
     },
     {
-          "question": "Which option for the meaning of KIA ORA is wrong?",
-          "options": ["hello!", "cheers!", "Excuse me", "best wishes!"],
-          "correct_answer": "3"
+      "category": "Maori",
+      "question": "Which option for the meaning of KIA ORA is wrong?",
+      "options": ["hello!", "cheers!", "Excuse me", "best wishes!"],
+      "correct_answer": "3"
       }
 ]

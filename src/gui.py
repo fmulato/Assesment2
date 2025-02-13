@@ -64,3 +64,8 @@ class QuizApp:
         # Move to the next question
         self.current_question_index += 1
         self.display_question()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = QuizApp(root)
+    root.mainloop()
