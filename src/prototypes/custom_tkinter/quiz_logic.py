@@ -1,17 +1,17 @@
 import json
-import random
+from utils import select_random_elements
+
 class Logic():
     def __init__(self, gui):
         self.gui = gui
 
     def load_questions(self, file_path):
-        """Load questions from a JSON file."""
+        """Load questions from a JSON file.""" # maybe change to access SQLite database - create a database class
         with open(file_path, "r", encoding='utf-8') as file:
             questions = json.load(file)
         return questions
 
     def display_question(self):
-        """Exibe a questão atual na interface."""
         if self.gui.current_question_index < len(self.gui.selected_questions):
             self.gui.question_number, self.gui.question_data = self.gui.selected_questions[self.gui.current_question_index]
             self.gui.category_label.configure(
@@ -70,6 +70,7 @@ class Logic():
         self.gui.current_question_index += 1
         self.gui.submit_button.configure(state="normal")  # Re-enable the Submit button
         self.gui.next_button.pack_forget()  # Hide the Next button
+
         self.display_question()
 
     def restart_quiz(self):
@@ -77,7 +78,7 @@ class Logic():
         self.gui.score_player1 = 0
         self.gui.score_player1_label.configure(text=f"Score: {self.gui.score_player1}")
         self.gui.current_question_index = 0
-        self.gui.selected_questions = random.sample(list(enumerate(self.gui.questions, start=1)), 3)  # Select 3 random questions
+        self.selected_questions = select_random_elements(self.gui.questions)  # Select 3 random questions
         self.gui.restart_button.pack_forget()  # Hide the restart button
 
         # Re-display the option buttons and Submit button
@@ -87,3 +88,11 @@ class Logic():
         self.gui.result_label.configure(text="")  # Clear the previous result
 
         self.display_question()  # Display the first question
+
+    def determine_quiz_winner (self):
+        print("{Player 1 is the winner!}")
+        pass
+
+    def end_quiz(self):
+        pass
+

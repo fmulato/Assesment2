@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import quiz_logic as ql
-import random
+from utils import select_random_elements
+
 
 # Import required for selecting random questions
 SIZE_WIDTH = 800
@@ -9,7 +10,7 @@ SIZE_HEIGHT = 600
 class Gui:
     def __init__(self, master):
         self.master = master
-        master.title("Quiz Game for Kids")
+        master.title("Brain up! Quiz Game for Kids")
         master.geometry(f"{SIZE_WIDTH}x{SIZE_HEIGHT}")
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
@@ -92,7 +93,8 @@ class Gui:
 
         # Load questions and select three random ones
         self.questions = self.logic.load_questions("questions.json")
-        self.selected_questions = random.sample(list(enumerate(self.questions, start=1)), 3)  # Select 3 random questions
+        self.selected_questions = select_random_elements(self.questions)  # Select 3 random questions
+        # Select 3 random questions
         self.current_question_index = 0
         self.logic.display_question()
 
