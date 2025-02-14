@@ -1,8 +1,8 @@
-import gui_ctk as gui
+import gui_ctk
 
 def app():
-    root = gui.ctk.CTk()
-    gui.Gui(root)
+    root = gui_ctk.ctk.CTk()
+    gui_ctk.Gui(root)
     root.mainloop()
 
 if __name__ == "__main__":

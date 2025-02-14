@@ -14,8 +14,12 @@ class Logic():
         """Exibe a questão atual na interface."""
         if self.gui.current_question_index < len(self.gui.selected_questions):
             self.gui.question_number, self.gui.question_data = self.gui.selected_questions[self.gui.current_question_index]
-            self.gui.category_label.configure(text=f"Category: {self.gui.question_data['category']}")
-            self.gui.question_label.configure(text=f"{self.gui.current_question_index + 1}. {self.gui.question_data['question']}")
+            self.gui.category_label.configure(
+                                            text=f"Category: {self.gui.question_data['category']}"
+                                            )
+            self.gui.question_label.configure(text=f"{self.gui.current_question_index + 1}. "
+                                                   f"{self.gui.question_data['question']}"
+                                              )
             for i, option in enumerate(self.gui.question_data["options"]):
                 self.gui.option_buttons[i].configure(text=option, text_color="black")
                 self.gui.option_buttons[i]._value = str(i + 1)
