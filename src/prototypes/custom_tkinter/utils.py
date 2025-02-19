@@ -1,7 +1,7 @@
 import random
 from typing import Sequence, List, Tuple
 
-NUMBER_QUESTION = 5
+NUMBER_QUESTION = 2
 
 def select_random_elements(elements: Sequence,  n: int = NUMBER_QUESTION) -> List[Tuple[int, any]]:
 

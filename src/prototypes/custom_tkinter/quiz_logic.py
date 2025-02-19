@@ -117,9 +117,9 @@ class Logic():
 
     def determine_quiz_winner(self):
         if self.gui.score_player1 > self.gui.score_player2:
-            self.gui.winner_label.configure(text=f"{self.player1_name} is the winner!", text_color="green")
+            self.gui.winner_label.configure(text=f"{self.gui.player1_name} is the winner!", text_color="green")
             self.gui.winner_label.pack(pady=(20, 0))
-            print(f"{self.player1_name} is the winner!")
+            print(f"{self.gui.player1_name} is the winner!")
         elif self.gui.score_player1 < self.gui.score_player2:
             self.gui.winner_label.configure(text="Player 2 is the winner!", text_color="green")
             self.gui.winner_label.pack(pady=(20, 0))
