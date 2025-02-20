@@ -4,30 +4,62 @@ import quiz_logic as ql
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
 
+class RootUtils:
+    @staticmethod
+    def center_window(root, width, height):
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+        root.geometry(f"{width}x{height}+{x}+{y}")
+        root.minsize(width, height)
+        root.maxsize(width, height)
 
 class StartScreen:
     def __init__(self):
         self.root = ctk.CTk()
         self.root.title("Welcome to Brain Up! - Registration")
-        self.root.geometry(f"{SIZE_WIDTH}x{SIZE_HEIGHT}")
 
+        ctk.set_appearance_mode("System")
+        ctk.set_default_color_theme("blue")
+
+        # Centralizar a janela
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = (screen_width // 2) - (SIZE_WIDTH // 2)
+        y = (screen_height // 2) - (SIZE_HEIGHT // 2)
+        self.root.geometry(f"{SIZE_WIDTH}x{SIZE_HEIGHT}+{x}+{y}")
+        self.root.minsize(SIZE_WIDTH, SIZE_HEIGHT)
+        self.root.maxsize(SIZE_WIDTH, SIZE_HEIGHT)
 
         self.player1 = "Player 1"
         self.age1 = ""
-
         self.player2 = "Player 2"
         self.age2 = ""
 
         font_instruction = ctk.CTkFont(family="Arial", size=16, weight="bold")
 
-        # Instructions
-        ctk.CTkLabel(self.root, text="Please select players:", font=font_instruction,
-                     text_color='blue').grid(row=0, column=0, columnspan=4, padx=5, pady=5)
+        # configure the grid
+        self.root.grid_columnconfigure(0, weight=1)
 
+        # Frame to label
+        label_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        label_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        label_frame.grid_columnconfigure(0, weight=1)
+
+        # Instructions
+        self.label_instructions = ctk.CTkLabel(label_frame, text="Please select players:", font=font_instruction,
+                     text_color='blue')
+        self.label_instructions.pack(expand=True, anchor="center")
+
+        # Frame to buttons
+        button_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        button_frame.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+        button_frame.grid_columnconfigure(0, weight=1)  # Centralizar na coluna do frame
 
         # Button to start the game
-        self.start_button = ctk.CTkButton(self.root, text="Start Game", command=self.start_game)
-        self.start_button.grid(row=5, column=0, columnspan=4, pady=20)
+        self.start_button = ctk.CTkButton(button_frame, text="Start Game", command=self.start_game, font=("Arial", 14), width=100)
+        self.start_button.pack(expand=True, anchor="center")  # Centralizar no frame
 
         self.root.mainloop()
 
@@ -41,8 +73,8 @@ class StartScreen:
 
     def start_game(self):
 
-        # Close the start screen
-        self.root.destroy()
+        # Hide the start screen
+        self.root.withdraw()
 
         # Open the game window
         root = ctk.CTk()  # Create a new window for the game
@@ -60,23 +92,13 @@ class Gui:
         self.age1 = age1
         self.player2 = player2
         self.age2 = age2
+
         # Code for the Gui class ...
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
 
         # Force the main window to appear centered on the screen
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
-
-        # Calculate the x and y coordinates to center the window
-        x = (screen_width // 2) - (SIZE_WIDTH // 2)
-        y = (screen_height // 2) - (SIZE_HEIGHT // 2)
-
-        # Set the geometry of the window (width x height + position_x + position_y)
-        self.root.geometry(f"{SIZE_WIDTH}x{SIZE_HEIGHT}+{x}+{y}")
-
-        self.root.minsize(SIZE_WIDTH, SIZE_HEIGHT)
-        self.root.maxsize(1.2 * SIZE_WIDTH, 1.2 * SIZE_HEIGHT)
+        RootUtils.center_window(self.root, SIZE_WIDTH, SIZE_HEIGHT)
 
         self.logic = ql.Logic(self)
 
