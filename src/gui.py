@@ -1,7 +1,5 @@
 import customtkinter as ctk
-from tkinter import simpledialog
 import quiz_logic as ql
-from utils import select_random_elements
 
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
