@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import quiz_logic as ql
+#import quiz_logic as ql
 
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
@@ -100,7 +100,7 @@ class Gui:
         # Force the main window to appear centered on the screen
         RootUtils.center_window(self.root, SIZE_WIDTH, SIZE_HEIGHT)
 
-        self.logic = ql.Logic(self)
+        #self.logic = ql.Logic(self)
 
         # Fonts
         font_player = ctk.CTkFont(family="Arial", size=18, weight="bold")
@@ -187,15 +187,18 @@ class Gui:
         self.frame_center_bottom.grid_columnconfigure(1, weight=1)
         self.frame_center_bottom.grid_columnconfigure(2, weight=1)
 
-        self.submit_button = ctk.CTkButton(self.frame_center_bottom, text="Submit", command=self.logic.check_answer,
+        self.submit_button = ctk.CTkButton(self.frame_center_bottom, text="Submit",
                                            font=("Arial", 14), width=100)
+        #command=self.logic.check_answer,
         self.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
-        self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next", command=self.logic.next_question,
+        self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next",
                                          font=("Arial", 14), width=100)
+        #command = self.logic.next_question,
         self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
         # self.next_button.grid_forget()
         self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz",
-                                            command=self.logic.restart_quiz, font=("Arial", 14), width=100)
+                                            font=("Arial", 14), width=100)
+        #command=self.logic.restart_quiz,
         self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
         # self.restart_button.grid_forget()
 
