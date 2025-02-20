@@ -1,0 +1,161 @@
+{
+  "users": [
+    {
+      "name": "Fabricio Mulato",
+      "email": "fabricio.mulato@example.com",
+      "role": "Developer",
+      "team": "Software Development",
+      "skills": ["Python", "Tkinter", "Agile Methodology"]
+    }
+  ]
+}
+{
+  "projects": [
+    {
+      "name": "Brain up: The Learning Adventure",
+      "key": "Bup",
+      "issues": [
+        {
+          "summary": "Core Gameplay",
+          "description": "Implement the basic gameplay features including turn-based gameplay, multiple-choice questions, timer, and scoring system.",
+          "issuetype": "Epic"
+        },
+        {
+          "summary": "Advanced Features",
+          "description": "Implement advanced features like Skip Question, Ask for Tips, and Bonus Points for the Last Question.",
+          "issuetype": "Epic"
+        },
+        {
+          "summary": "Ranking System",
+          "description": "Develop a weekly leaderboard and scoring mechanism to track player progress.",
+          "issuetype": "Epic"
+        },
+        {
+          "summary": "GUI and Usability",
+          "description": "Design and implement a child-friendly graphical user interface using Tkinter or PyQt6.",
+          "issuetype": "Epic"
+        },
+        {
+          "summary": "As a player, I want to register so that I can track my progress.",
+          "description": "Implement a registration/login system for players to track their scores and progress.",
+          "issuetype": "Story",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "As a player, I want to answer multiple-choice questions within a time limit so that the game is challenging and engaging.",
+          "description": "Implement multiple-choice questions with a 15-second timer for each question.",
+          "issuetype": "Story",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "As a player, I want to skip a question twice per game so that I can avoid difficult questions strategically.",
+          "description": "Add functionality to allow players to skip a question twice during the game.",
+          "issuetype": "Story",
+          "customfield_10008": "Advanced Features"
+        },
+        {
+          "summary": "As a player, I want to ask for hints twice per game so that I can get help when stuck.",
+          "description": "Implement a hint system that reduces answer choices and deducts points.",
+          "issuetype": "Story",
+          "customfield_10008": "Advanced Features"
+        },
+        {
+          "summary": "As a player, I want to earn bonus points for the last question so that the game stays exciting until the end.",
+          "description": "Add double points for the final question of the game.",
+          "issuetype": "Story",
+          "customfield_10008": "Advanced Features"
+        },
+        {
+          "summary": "Set up the project repository and Jira board.",
+          "description": "Initialize the project repository and configure the Jira board for task management.",
+          "issuetype": "Task",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "Create basic GUI layout using Tkinter.",
+          "description": "Design a simple and child-friendly GUI using Tkinter.",
+          "issuetype": "Task",
+          "customfield_10008": "GUI and Usability"
+        },
+        {
+          "summary": "Implement player registration/login system.",
+          "description": "Develop a basic registration and login system for players.",
+          "issuetype": "Task",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "Design database schema for storing questions, answers, and scores.",
+          "description": "Create a database schema to store game data.",
+          "issuetype": "Task",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "Populate the database with a small set of questions for one subject (e.g., Science).",
+          "description": "Add initial questions to the database for testing purposes.",
+          "issuetype": "Task",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "Add functionality for two-player turn-based gameplay.",
+          "description": "Implement turn-based gameplay logic for two players.",
+          "issuetype": "Task",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "Integrate a timer for each question (15 seconds).",
+          "description": "Add a countdown timer for each question.",
+          "issuetype": "Task",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "Randomize question selection from the predefined pool.",
+          "description": "Ensure questions are randomly selected without repetition.",
+          "issuetype": "Task",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "Develop a basic scoring system (10 points for correct answers, 0 for incorrect).",
+          "description": "Implement a scoring system for the game.",
+          "issuetype": "Task",
+          "customfield_10008": "Core Gameplay"
+        },
+        {
+          "summary": "Implement 'Skip Question' functionality (twice per game).",
+          "description": "Allow players to skip a question twice during the game.",
+          "issuetype": "Task",
+          "customfield_10008": "Advanced Features"
+        },
+        {
+          "summary": "Implement 'Ask for Tip' functionality (twice per game).",
+          "description": "Add a hint system that reduces answer choices and deducts points.",
+          "issuetype": "Task",
+          "customfield_10008": "Advanced Features"
+        },
+        {
+          "summary": "Add bonus points for the last question (double points).",
+          "description": "Award double points for the final question of the game.",
+          "issuetype": "Task",
+          "customfield_10008": "Advanced Features"
+        },
+        {
+          "summary": "Create a weekly leaderboard (if time permits).",
+          "description": "Develop a leaderboard to display top players weekly.",
+          "issuetype": "Task",
+          "customfield_10008": "Ranking System"
+        },
+        {
+          "summary": "Test the app thoroughly for bugs and usability issues.",
+          "description": "Conduct testing to ensure the app is bug-free and user-friendly.",
+          "issuetype": "Task",
+          "customfield_10008": "GUI and Usability"
+        },
+        {
+          "summary": "Deploy the app to a desktop platform.",
+          "description": "Release the application for desktop use.",
+          "issuetype": "Task",
+          "customfield_10008": "GUI and Usability"
+        }
+      ]
+    }
+  ]
+}
