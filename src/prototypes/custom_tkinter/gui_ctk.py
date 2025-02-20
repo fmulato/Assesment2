@@ -41,7 +41,7 @@ class Gui:
         self.score_player1_label = ctk.CTkLabel(self.frame_left, text=f"   Score: {self.score_player1}   ", font=font_score)
         self.score_player1_label.pack(pady=5)
 
-                # Player 2
+        # Player 2
         self.player2_label = ctk.CTkLabel(self.frame_right, text="   Player 2:   ", font=font_player)
         self.player2_label.pack(pady=10)
         self.score_player2 = 0
@@ -103,4 +103,3 @@ class Gui:
         self.selected_questions = select_random_elements(self.questions)
         self.current_question_index = 0
         self.logic.display_question()
-
