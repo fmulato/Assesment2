@@ -1,6 +1,10 @@
 import customtkinter as ctk
 #import quiz_logic as ql
 
+#import user_management.py
+from user_management import UserManagement
+
+
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
 
