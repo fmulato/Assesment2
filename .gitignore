@@ -14,3 +14,4 @@ env/
 *.iml
 dist/
 build/
+/src/__pycache__

@@ -23,9 +23,16 @@ class StartScreen:
     def __init__(self):
         self.root = ctk.CTk()
         self.root.title("Welcome to Brain Up! - Registration")
+        # Add user management instance
+        self.user_manager = UserManagement()
+
 
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
+
+        # Add New Name button
+        self.add_name_button = ctk.CTkButton(self.root, text="Add New Name", command=self.add_new_name)
+        self.add_name_button.grid(row=4, column=0, columnspan=4, pady=10)
 
         # Centralizar a janela
         screen_width = self.root.winfo_screenwidth()
