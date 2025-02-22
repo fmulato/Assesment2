@@ -1,47 +1,53 @@
 #Still working on it till Sunday
 
 import sqlite3
-from tkinter import messagebox
+from datetime import datetime
+from tkinter import messagebox, simpledialog
 
-#Path of userdb
-DB_PATH = "users.db"  #
-
+#databse file path
+DB_PATH = "users.db"
 
 class UserManagement:
     def __init__(self):
-        self.create_table()
+        self.create_tables()
 
-    def create_table(self):
+    def create_tables(self):
+        # creating two tables
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                username TEXT NOT NULL CHECK(length(username) <= 18), 
-                password TEXT NOT NULL CHECK(length(password) <= 18),
-                age INTEGER NOT NULL CHECK(age BETWEEN 10 AND 12),
-                current_score INTEGER NOT NULL DEFAULT 0,    
-                total_score INTEGER NOT NULL DEFAULT 0
-            )
+        cursor.executescript("""
+            CREATE TABLE IF NOT EXISTS players (
+                "id_player"	TEXT NOT NULL,
+                "username"	TEXT NOT NULL UNIQUE,
+                "birthday"	TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS Scores (
+                "id_player"	TEXT,
+                "id_score"	INTEGER,
+                "date_time"	TEXT,
+                "age"	INTEGER,
+                "current_score"	INTEGER
+            );
         """)
         connection.commit()
         connection.close()
 
-    def register_user(self, username, age):
-        if not username or not age.isdigit():
-            messagebox.showerror("Error", "Invalid input. Please enter a valid name and age.")
+    def register_user(self, username, birthday):
+        # adding new user to the database (players)
+        try:
+            birth_date = datetime.strptime(birthday, "%Y-%m-%d")
+        except ValueError:
+            messagebox.showerror("Error", "Invalid date format. Use YYYY-MM-DD.")
             return False
 
-        age = int(age)
-        if not (10 <= age <= 12):
-            messagebox.showerror("Error", "Wrong age. Please enter your age again.")
-            return False
+        id_player = username
 
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
         try:
-            cursor.execute("INSERT INTO users (username, password, age) VALUES (?, ?, ?)",
-                           (username, "default123", age))
+            cursor.execute("INSERT INTO players (id_player, username, birthday) VALUES (?, ?, ?)",
+                           (id_player, username, birthday))
             connection.commit()
             messagebox.showinfo("Success", f"User {username} registered successfully!")
             return True
@@ -50,3 +56,9 @@ class UserManagement:
             return False
         finally:
             connection.close()
+
+    def calculate_age(self, birthday):
+        # calculating current age based the birthday
+        birth_date = datetime.strptime(birthday, "%Y-%m-%d")
+        today = datetime.today()
+        return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
