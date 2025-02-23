@@ -1,12 +1,15 @@
 import customtkinter as ctk
 #import quiz_logic as ql
+from PIL import Image
+import os
+import pygame
 
 #import user_management.py
 from user_management import UserManagement
 
-
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
+LIMIT_TIME = 5
 
 class RootUtils:
     @staticmethod
@@ -34,14 +37,8 @@ class StartScreen:
         self.add_name_button = ctk.CTkButton(self.root, text="Add New Name", command=self.add_new_name)
         self.add_name_button.grid(row=4, column=0, columnspan=4, pady=10)
 
-        # Centralizar a janela
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
-        x = (screen_width // 2) - (SIZE_WIDTH // 2)
-        y = (screen_height // 2) - (SIZE_HEIGHT // 2)
-        self.root.geometry(f"{SIZE_WIDTH}x{SIZE_HEIGHT}+{x}+{y}")
-        self.root.minsize(SIZE_WIDTH, SIZE_HEIGHT)
-        self.root.maxsize(SIZE_WIDTH, SIZE_HEIGHT)
+        # Force the main window to appear centered on the screen
+        RootUtils.center_window(self.root, SIZE_WIDTH, SIZE_HEIGHT)
 
         self.player1 = "Player 1"
         self.age1 = ""
@@ -104,7 +101,9 @@ class Gui:
         self.player2 = player2
         self.age2 = age2
 
-        # Code for the Gui class ...
+        pygame.mixer.init()
+
+        # Code for the Gui class
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
 
@@ -202,16 +201,55 @@ class Gui:
                                            font=("Arial", 14), width=100)
         #command=self.logic.check_answer,
         self.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+
         self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next",
-                                         font=("Arial", 14), width=100)
+                                         command=lambda: self.countdown(LIMIT_TIME), font=("Arial", 14), width=100)
         #command = self.logic.next_question,
         self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
         # self.next_button.grid_forget()
+
         self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz",
                                             font=("Arial", 14), width=100)
         #command=self.logic.restart_quiz,
         self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
         # self.restart_button.grid_forget()
 
+        self.exit_button = ctk.CTkButton(self.frame_center_bottom, text="Exit",
+                                            command=self.exit, font=("Arial", 14), width=100)
+        self.exit_button.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
+        # self.restart_button.grid_forget()
+
+        self.config_button = ctk.CTkButton(self.frame_center_bottom, text="Setup",
+                                         command=self.config, font=("Arial", 14), width=100)
+        self.config_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+        # self.restart_button.grid_forget()
+
+        self.timer = ctk.CTkLabel(self.frame_center_bottom, font=("Arial", 24))
+        self.timer.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+        self.timer.grid_forget()
+
     def run(self):
         self.root.mainloop()
+
+    def countdown(self, count):
+        self.timer.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+        self.timer.configure(text=str(count), text_color="red")
+
+        if count > 0:
+            self.root.after(1000, self.countdown, count - 1)
+
+            if count == LIMIT_TIME:
+                pygame.mixer.music.load("tic-tac.mp3")
+                pygame.mixer.music.play(loops=-1, fade_ms=500)
+
+        else:
+            self.timer.configure(text="Time's up!")
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load("buzz.mp3")
+            pygame.mixer.music.play()
+
+    def exit(self):
+        self.root.destroy()
+
+    def config(self):
+        pass

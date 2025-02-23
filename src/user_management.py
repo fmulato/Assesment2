@@ -49,7 +49,7 @@ class UserManagement:
 
         try:
             cursor.execute("INSERT INTO players (id_player, username, birthday) VALUES (?, ?, ?)",
-                           (id_player, username, birthday))
+                           (id_player, username, birth_date))
             connection.commit()
             messagebox.showinfo("Success", f"User {username} registered successfully!")
             return True
