@@ -406,8 +406,8 @@ class Gui:
             pygame.mixer.music.play()
 
     def exit(self):
-        self.root.quit()
-        self.root.destroy()
+        quit()
+
 
     def config(self):
         pass
