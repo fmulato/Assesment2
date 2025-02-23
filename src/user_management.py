@@ -75,7 +75,6 @@ class UserManagement:
         cursor = connection.cursor()
 
         try:
-            # Get id_player for the given username
             cursor.execute("SELECT id_player FROM players WHERE username = ?", (username,))
             result = cursor.fetchone()
 
@@ -85,7 +84,6 @@ class UserManagement:
 
             id_player = result[0]
 
-            # Insert age into scores table linked to id_player
             cursor.execute("INSERT INTO scores (id_player, age) VALUES (?, ?)", (id_player, age))
             connection.commit()
             return True
@@ -114,3 +112,16 @@ class UserManagement:
             """)
             connection.commit()
             connection.close()
+class CustomPopup(ctk.CTkToplevel):
+    """ Custom pop-up window for success and error messages """
+    def __init__(self, title, message):
+        super().__init__()
+        self.title(title)
+        self.geometry("300x150")
+        self.grab_set()  # Make modal
+
+        label = ctk.CTkLabel(self, text=message, wraplength=250)
+        label.pack(pady=10)
+
+        button = ctk.CTkButton(self, text="OK", command=self.destroy)
+        button.pack(pady=10)
