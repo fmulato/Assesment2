@@ -4,15 +4,16 @@ from datetime import datetime
 import customtkinter as ctk
 
 #databse files path
-DB_PATH = "users.db"
-QUIZ_DB_PATH = "quiz.db"
+DB_PATH = "brainup.db"
+#DB_PATH = "users.db"
+#QUIZ_DB_PATH = "quiz.db"
 
 class UserManagement:
     def __init__(self):
         self.create_tables()
 
     def create_tables(self):
-        # id_player is index number of user. even some can use same username, they can be identified by id_player.
+        """ Creates tables for players, scores, and questions if they do not exist in brainup.db. """
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         cursor.executescript("""
@@ -28,6 +29,16 @@ class UserManagement:
                 "age" INTEGER NOT NULL,
                 "current_score" INTEGER DEFAULT 0,
                 FOREIGN KEY (id_player) REFERENCES players(id_player) ON DELETE CASCADE
+            );
+            CREATE TABLE IF NOT EXISTS questions (
+                "id_question" INTEGER PRIMARY KEY AUTOINCREMENT,
+                "category" TEXT NOT NULL,
+                "question" TEXT NOT NULL,
+                "option_1" TEXT NOT NULL,
+                "option_2" TEXT NOT NULL,
+                "option_3" TEXT NOT NULL,
+                "option_4" TEXT NOT NULL,
+                "correct_answer" INTEGER NOT NULL
             );
         """)
         connection.commit()
@@ -94,24 +105,22 @@ class UserManagement:
             connection.close()
 
     def check_and_create_quiz_db(self):
-        # if there's no quiz.db file, create new one
-        if not os.path.exists(QUIZ_DB_PATH):
-            connection = sqlite3.connect(QUIZ_DB_PATH)
-            cursor = connection.cursor()
-            cursor.execute("""
-                CREATE TABLE "questions" (
-                    "id_question" INTEGER PRIMARY KEY AUTOINCREMENT,
-                    "category" TEXT NOT NULL,
-                    "question" TEXT NOT NULL,
-                    "option_1" TEXT NOT NULL,
-                    "option_2" TEXT NOT NULL,
-                    "option_3" TEXT NOT NULL,
-                    "option_4" TEXT NOT NULL,
-                    "correct_answer" INTEGER NOT NULL
-                );
-            """)
-            connection.commit()
-            connection.close()
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS questions (
+                "id_question" INTEGER PRIMARY KEY AUTOINCREMENT,
+                "category" TEXT NOT NULL,
+                "question" TEXT NOT NULL,
+                "option_1" TEXT NOT NULL,
+                "option_2" TEXT NOT NULL,
+                "option_3" TEXT NOT NULL,
+                "option_4" TEXT NOT NULL,
+                "correct_answer" INTEGER NOT NULL
+            );
+        """)
+        connection.commit()
+        connection.close()
 
     def get_all_players(self):
         """ Fetch all players and their latest recorded age from the scores table. """
@@ -119,7 +128,7 @@ class UserManagement:
         cursor = connection.cursor()
 
         query = """
-            SELECT p.username, COALESCE(s.age, 'Unknown') 
+            SELECT p.username, COALESCE(s.age, (SELECT age FROM scores WHERE id_player = p.id_player ORDER BY date_time DESC LIMIT 1)) 
             FROM players p 
             LEFT JOIN scores s ON p.id_player = s.id_player 
             GROUP BY p.username
@@ -128,8 +137,6 @@ class UserManagement:
         players = cursor.fetchall()
 
         connection.close()
-
-        #print("📋 Players in DB:", players)  # ✅ Debugging output
 
         return players
 

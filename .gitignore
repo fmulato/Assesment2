@@ -25,3 +25,4 @@ src/__pycache__/gui.cpython-312.pyc
 .idea/misc.xml
 src/.idea/misc.xml
 src/.idea/src.iml
+*.xml
