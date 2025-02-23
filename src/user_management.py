@@ -112,6 +112,28 @@ class UserManagement:
             """)
             connection.commit()
             connection.close()
+
+    def get_all_players(self):
+        """ Fetch all players and their latest recorded age from the scores table. """
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
+
+        query = """
+            SELECT p.username, COALESCE(s.age, 'Unknown') 
+            FROM players p 
+            LEFT JOIN scores s ON p.id_player = s.id_player 
+            GROUP BY p.username
+        """
+        cursor.execute(query)
+        players = cursor.fetchall()
+
+        connection.close()
+
+        print("📋 Players in DB:", players)  # ✅ Debugging output
+
+        return players
+
+
 class CustomPopup(ctk.CTkToplevel):
     """ Custom pop-up window for success and error messages """
     def __init__(self, title, message):
@@ -125,3 +147,4 @@ class CustomPopup(ctk.CTkToplevel):
 
         button = ctk.CTkButton(self, text="OK", command=self.destroy)
         button.pack(pady=10)
+

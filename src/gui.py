@@ -33,6 +33,11 @@ class StartScreen:
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
 
+        # Selected players list (Max 2 people)
+        self.selected_players = []
+
+
+
         # Add New Name button
         self.add_name_button = ctk.CTkButton(self.root, text="Add New Name", command=self.add_new_name)
         self.add_name_button.grid(row=4, column=0, columnspan=4, pady=10)
@@ -58,19 +63,49 @@ class StartScreen:
         # Instructions
         self.label_instructions = ctk.CTkLabel(label_frame, text="Please select players:", font=font_instruction,
                      text_color='blue')
-        self.label_instructions.pack(expand=True, anchor="center")
+        self.label_instructions.grid(row=0, column=0, pady=10)
 
-        # Frame to buttons
-        button_frame = ctk.CTkFrame(self.root, fg_color="transparent")
-        button_frame.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
-        button_frame.grid_columnconfigure(0, weight=1)  # Centralizar na coluna do frame
+        # Frame for player buttons
+        self.button_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        self.button_frame.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+        self.button_frame.grid_columnconfigure(0, weight=1)
 
-        # Button to start the game
-        self.start_button = ctk.CTkButton(button_frame, text="Start Game", command=self.start_game, font=("Arial", 14), width=100)
-        self.start_button.pack(expand=True, anchor="center")  # Centralizar no frame
+        # Fetch & display players from database
+        self.display_player_buttons()
+
+        # Button to start the game (Initially disabled)
+        self.start_button = ctk.CTkButton(self.root, text="Start Game", command=self.start_game, font=("Arial", 14),
+                                          width=100, state="disabled")
+        self.start_button.grid(row=2, column=0, pady=10)
 
         self.root.mainloop()
 
+    def display_player_buttons(self):
+        players = self.user_manager.get_all_players()
+
+        if not players:
+            ctk.CTkLabel(self.button_frame, text="No players found. Add players first!", font=("Arial", 14)).pack(pady=5)
+            return
+
+        for username, age in players:
+            btn = ctk.CTkButton(self.button_frame, text=f"{username} ({age})",
+                                command=lambda u=username, a=age, b=None: self.toggle_player_selection(u, a, b))
+            btn.pack(pady=5)
+
+    def toggle_player_selection(self, username, age, button):
+        """ Handles selecting and deselecting players. """
+        player = (username, age)
+
+        if player in self.selected_players:
+            self.selected_players.remove(player)  # Deselect player
+            button.configure(fg_color="SystemButtonFace")  # Reset color
+        else:
+            if len(self.selected_players) < 2:
+                self.selected_players.append(player)  # Select player
+                button.configure(fg_color="green")  # Change color to indicate selection
+
+        # Enable start button only if two players are selected
+        self.start_button.configure(state="normal" if len(self.selected_players) == 2 else "disabled")
 
     def add_new_name(self):
         AddNameDialog(self.root, self.user_manager)  # Open the dialog
@@ -80,14 +115,23 @@ class StartScreen:
 
 
     def start_game(self):
+        """ Start the game with selected players. """
+        if len(self.selected_players) != 2:
+            return  # Ensure exactly two players are selected
 
-        # Hide the start screen
+        player1, age1 = self.selected_players[0]
+        player2, age2 = self.selected_players[1]
+
+        print(f"Starting game with: {player1} ({age1}) vs {player2} ({age2})")
+
+        # Hide current screen
         self.root.withdraw()
 
-        # Open the game window
-        root = ctk.CTk()  # Create a new window for the game
-        game = Gui(root, self.player1, self.age1, self.player2, self.age2)
+        # Open the game window (Assuming you have a game class)
+        game_window = ctk.CTk()
+        game = Gui(game_window, player1, age1, player2, age2)  # Assuming `Gui` is your game class
         game.run()
+
 class AddNameDialog(ctk.CTkToplevel):
     """ Custom pop-up window for entering Name and Date of Birth using only customtkinter. """
     def __init__(self, parent, user_manager):
