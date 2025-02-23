@@ -73,7 +73,7 @@ class StartScreen:
 
 
     def add_new_name(self):
-        pass
+        AddNameDialog(self.root, self.user_manager)  # Open the dialog
 
     def update_buttons(self):
         pass
@@ -88,6 +88,59 @@ class StartScreen:
         root = ctk.CTk()  # Create a new window for the game
         game = Gui(root, self.player1, self.age1, self.player2, self.age2)
         game.run()
+class AddNameDialog(ctk.CTkToplevel):
+    """ Custom pop-up window for entering Name and Date of Birth using only customtkinter. """
+    def __init__(self, parent, user_manager):
+        super().__init__(parent)
+        self.user_manager = user_manager
+        self.result = None
+
+        self.title("Add New Player")
+        self.geometry("300x200")
+        self.grab_set()  # Make the window modal (force user interaction)
+
+        ctk.CTkLabel(self, text="Name:").pack(pady=5)
+        self.name_entry = ctk.CTkEntry(self)
+        self.name_entry.pack(pady=5)
+
+        ctk.CTkLabel(self, text="Birthday (YYYY-MM-DD):").pack(pady=5)
+        self.birthday_entry = ctk.CTkEntry(self)
+        self.birthday_entry.pack(pady=5)
+
+        self.submit_button = ctk.CTkButton(self, text="OK", command=self.apply)
+        self.submit_button.pack(pady=10)
+
+    def apply(self):
+        """ Save input values when OK is pressed """
+        name = self.name_entry.get()
+        birthday = self.birthday_entry.get()
+
+        if not name or not birthday:
+            CustomPopup(self, "Error", "Both fields are required.")
+            return
+
+        success = self.user_manager.register_user(name, birthday)
+        if success:
+            age = self.user_manager.calculate_age(birthday)
+            self.user_manager.save_age_to_scores(name, age)
+            CustomPopup(self, "Success",
+                        f"User {name} added successfully with age {age}!")
+            self.destroy()  # Close the pop-up after success
+
+class CustomPopup(ctk.CTkToplevel):
+    """ Custom pop-up window for success and error messages """
+    def __init__(self, parent, title, message):
+        super().__init__(parent)
+        self.title(title)
+        self.geometry("300x150")
+        self.grab_set()  # Make modal
+
+        label = ctk.CTkLabel(self, text=message, wraplength=250)
+        label.pack(pady=10)
+
+        button = ctk.CTkButton(self, text="OK", command=self.destroy)
+        button.pack(pady=10)
+
 
 
 class Gui:
