@@ -37,7 +37,6 @@ class StartScreen:
         self.selected_players = []
 
 
-
         # Add New Name button
         self.add_name_button = ctk.CTkButton(self.root, text="Add New Name", command=self.add_new_name)
         self.add_name_button.grid(row=4, column=0, columnspan=4, pady=10)
@@ -140,7 +139,12 @@ class AddNameDialog(ctk.CTkToplevel):
         self.result = None
 
         self.title("Add New Player")
-        self.geometry("300x200")
+
+        window_width = 300
+        window_height = 200
+        RootUtils.center_window(self, window_width, window_height)
+
+        #self.geometry("300x200")
         self.grab_set()  # Make the window modal (force user interaction)
 
         ctk.CTkLabel(self, text="Name:").pack(pady=5)
@@ -176,6 +180,7 @@ class CustomPopup(ctk.CTkToplevel):
     def __init__(self, parent, title, message):
         super().__init__(parent)
         self.title(title)
+
         self.geometry("300x150")
         self.grab_set()  # Make modal
 

@@ -139,7 +139,15 @@ class CustomPopup(ctk.CTkToplevel):
     def __init__(self, title, message):
         super().__init__()
         self.title(title)
-        self.geometry("300x150")
+
+        from gui import RootUtils
+
+        gui = RootUtils()
+        window_width = 300
+        window_height = 150
+        gui.center_window(self, window_width, window_height)
+
+        #self.geometry("300x150")
         self.grab_set()  # Make modal
 
         label = ctk.CTkLabel(self, text=message, wraplength=250)
