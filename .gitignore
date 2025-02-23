@@ -15,3 +15,6 @@ env/
 dist/
 build/
 /src/__pycache__
+.idea/Assesment2.iml
+.idea/misc.xml
+src/__pycache__/gui.cpython-312.pyc
