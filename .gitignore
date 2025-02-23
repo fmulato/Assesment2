@@ -20,3 +20,4 @@ build/
 src/__pycache__/gui.cpython-312.pyc
 .idea/Assesment2.iml
 .idea/misc.xml
+/.idea
