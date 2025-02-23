@@ -12,7 +12,7 @@ class UserManagement:
         self.create_tables()
 
     def create_tables(self):
-        """ Create tables if they do not exist. """
+        # id_player is index number of user. even some can use same username, they can be identified by id_player.
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
         cursor.executescript("""
