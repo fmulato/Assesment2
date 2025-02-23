@@ -74,40 +74,89 @@ class StartScreen:
 
         # Button to start the game (Initially disabled)
         self.start_button = ctk.CTkButton(self.root, text="Start Game", command=self.start_game, font=("Arial", 14),
-                                          width=100, state="disabled")
+                                          width=100, state="normal")
         self.start_button.grid(row=2, column=0, pady=10)
 
         self.root.mainloop()
 
     def display_player_buttons(self):
+        # Clear the button frame, before adding new buttons
+        for widget in self.button_frame.winfo_children():
+            widget.destroy()
+
         players = self.user_manager.get_all_players()
 
         if not players:
-            ctk.CTkLabel(self.button_frame, text="No players found. Add players first!", font=("Arial", 14)).pack(pady=5)
+            ctk.CTkLabel(self.button_frame, text="No players found. Add players first!", font=("Arial", 14)).grid(row=0, column=0, pady=5, sticky="nesw")
             return
 
+        # Variables to keep track of row and column
+        row = 0
+        col = 0
+        max_columns = 6
+
         for username, age in players:
-            btn = ctk.CTkButton(self.button_frame, text=f"{username} ({age})",
-                                command=lambda u=username, a=age, b=None: self.toggle_player_selection(u, a, b))
-            btn.pack(pady=5)
+            btn = ctk.CTkButton(
+                self.button_frame,
+                text=f"{username} ({age})",
+                command=lambda u=username, a=age: self.toggle_player_selection(u, a, btn),
+                width=120
+            )
+            btn.grid(row=row, column=col, padx=2, pady=2, sticky="nesw")
+
+            col += 1
+            if col > max_columns:  # Go to next row
+                col = 0
+                row += 1
+
+        # Configuration for the grid
+        for i in range(max_columns):
+            self.button_frame.grid_columnconfigure(i, weight=1)
 
     def toggle_player_selection(self, username, age, button):
-        """ Handles selecting and deselecting players. """
+        """Handles selecting players, enforcing a maximum of two at a time,
+        and rotating selection when a third is picked."""
+
         player = (username, age)
 
         if player in self.selected_players:
-            self.selected_players.remove(player)  # Deselect player
-            button.configure(fg_color="SystemButtonFace")  # Reset color
+            self.selected_players.remove(player)
         else:
-            if len(self.selected_players) < 2:
-                self.selected_players.append(player)  # Select player
-                button.configure(fg_color="green")  # Change color to indicate selection
+            if len(self.selected_players) == 2:
+                self.selected_players.pop(0)  # Exclude
 
-        # Enable start button only if two players are selected
+            self.selected_players.append(player)
+
+        # Update button colors and start button
+        self.update_button_colors()
+        self.update_start_button()
+
+    def update_button_colors(self):
+        """Update the colors of the player buttons based on selection.
+        Green for player 1, Blue for player 2."""
+
+        for btn in self.button_frame.winfo_children():
+            btn.configure(fg_color="lightgray", state="normal")  # Grant all buttons the "normal" state
+
+        for index, (username, age) in enumerate(self.selected_players):
+            for btn in self.button_frame.winfo_children():
+                if username in btn.cget("text"):  # Verify if name is in the button
+                    btn.configure(fg_color="green" if index == 0 else "blue", state="normal")
+                    break
+
+    def update_start_button(self):
+        """Enables the start button when 2 players are selected"""
         self.start_button.configure(state="normal" if len(self.selected_players) == 2 else "disabled")
 
+        # Update player names and ages
+        if len(self.selected_players) == 2:
+            self.player1, self.age1 = self.selected_players[0]
+            self.player2, self.age2 = self.selected_players[1]
+
     def add_new_name(self):
-        AddNameDialog(self.root, self.user_manager)  # Open the dialog
+        #AddNameDialog(self.root, self.user_manager)
+        #AddNameDialog(self, self.user_manager)
+        AddNameDialog(self.root, self.user_manager, self)
 
     def update_buttons(self):
         pass
@@ -133,9 +182,11 @@ class StartScreen:
 
 class AddNameDialog(ctk.CTkToplevel):
     """ Custom pop-up window for entering Name and Date of Birth using only customtkinter. """
-    def __init__(self, parent, user_manager):
-        super().__init__(parent)
+    def __init__(self, parent, user_manager, start_screen):
+        super().__init__(parent)  # Use parent (self.root) para CTkToplevel
         self.user_manager = user_manager
+        self.start_screen = start_screen  # Referência à instância de StartScreen
+        self.parent = parent  # Inicializa o atributo 'parent' corretamente
         self.result = None
 
         self.title("Add New Player")
@@ -144,7 +195,6 @@ class AddNameDialog(ctk.CTkToplevel):
         window_height = 200
         RootUtils.center_window(self, window_width, window_height)
 
-        #self.geometry("300x200")
         self.grab_set()  # Make the window modal (force user interaction)
 
         ctk.CTkLabel(self, text="Name:").pack(pady=5)
@@ -173,6 +223,7 @@ class AddNameDialog(ctk.CTkToplevel):
             self.user_manager.save_age_to_scores(name, age)
             CustomPopup(self, "Success",
                         f"User {name} added successfully with age {age}!")
+            self.start_screen.display_player_buttons()  # Use a referência ao StartScreen
             self.destroy()  # Close the pop-up after success
 
 class CustomPopup(ctk.CTkToplevel):
@@ -181,7 +232,11 @@ class CustomPopup(ctk.CTkToplevel):
         super().__init__(parent)
         self.title(title)
 
-        self.geometry("300x150")
+        window_width = 300
+        window_height = 200
+        RootUtils.center_window(self, window_width, window_height)
+
+        #self.geometry("300x150")
         self.grab_set()  # Make modal
 
         label = ctk.CTkLabel(self, text=message, wraplength=250)
@@ -351,6 +406,7 @@ class Gui:
             pygame.mixer.music.play()
 
     def exit(self):
+        self.root.quit()
         self.root.destroy()
 
     def config(self):
