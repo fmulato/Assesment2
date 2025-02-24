@@ -138,6 +138,8 @@ class UserManagement:
 
         connection.close()
 
+        #print("📋 Players in DB:", players)  # ✅ Debugging output
+
         return players
 
 

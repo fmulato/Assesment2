@@ -60,9 +60,31 @@ class StartScreen:
         label_frame.grid_columnconfigure(0, weight=1)
 
         # Instructions
+
+        # Configure columns to have equal weight for balanced spacing
+        label_frame.columnconfigure(0, weight=1)  # Column for Player 1
+        label_frame.columnconfigure(1, weight=1)  # Column for "VS"
+        label_frame.columnconfigure(2, weight=1)  # Column for Player 2
+
         self.label_instructions = ctk.CTkLabel(label_frame, text="Please select players:", font=font_instruction,
                      text_color='blue')
-        self.label_instructions.grid(row=0, column=0, pady=10)
+        self.label_instructions.grid(row=0, column=1, pady=10)
+
+        # Player 1:
+        self.label_player1 = ctk.CTkLabel(label_frame, text="Player 1:", font=font_instruction, text_color='green')
+        self.label_player1.grid(row=1, column=0, pady=5, sticky="ew")
+        self.label_player1_age = ctk.CTkLabel(label_frame, text=self.age1, font=font_instruction, text_color='green')
+        self.label_player1_age.grid(row=2, column=0, pady=5, sticky="ew")
+
+        # versus
+        self.label_vs = ctk.CTkLabel(label_frame, text="      VS      ", font=font_instruction, text_color='black')
+        self.label_vs.grid(row=1, column=1, pady=5, sticky="ew")
+
+        # Player 2:
+        self.label_player2 = ctk.CTkLabel(label_frame, text="Player 2:", font=font_instruction, text_color='blue')
+        self.label_player2.grid(row=1, column=2, pady=5, sticky="ew")
+        self.label_player2_age = ctk.CTkLabel(label_frame, text=self.age2, font=font_instruction, text_color='blue')
+        self.label_player2_age.grid(row=2, column=2, pady=5, sticky="ew")
 
         # Frame for player buttons
         self.button_frame = ctk.CTkFrame(self.root, fg_color="transparent")
