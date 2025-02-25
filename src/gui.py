@@ -207,8 +207,8 @@ class AddNameDialog(ctk.CTkToplevel):
     def __init__(self, parent, user_manager, start_screen):
         super().__init__(parent)  # Use parent (self.root) para CTkToplevel
         self.user_manager = user_manager
-        self.start_screen = start_screen  # Referência à instância de StartScreen
-        self.parent = parent  # Inicializa o atributo 'parent' corretamente
+        self.start_screen = start_screen  # Referece to instance
+        self.parent = parent
         self.result = None
 
         self.title("Add New Player")

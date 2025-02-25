@@ -12,6 +12,7 @@ env/
 *.egg-info/
 *.xml
 *.iml
+*.db
 dist/
 build/
 /src/__pycache__

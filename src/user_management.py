@@ -47,7 +47,7 @@ class UserManagement:
     def register_user(self, username, birthday):
         """ Adds a new user to the database. """
         try:
-            birth_date = datetime.strptime(birthday, "%Y-%m-%d")
+            birthday = datetime.strptime(birthday, "%Y-%m-%d")
         except ValueError:
             CustomPopup("Error", "Invalid date format. Use YYYY-MM-DD.")
             return False
