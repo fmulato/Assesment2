@@ -1,6 +1,7 @@
 import json
 from utils import select_random_elements
 import datetime
+import gui
 
 class Logic():
     def __init__(self, gui):

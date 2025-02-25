@@ -4,6 +4,10 @@ Verifies if a question already exists in the database. If it does, it skips the 
 """""
 import json
 import sqlite3
+import random
+from typing import Sequence, List, Tuple
+
+NUMBER_QUESTION = 3
 
 class Utils:
 
@@ -58,6 +62,20 @@ class Utils:
         conn.close()
 
         return result is not None
+
+
+
+    def select_random_elements(elements: Sequence, n: int = NUMBER_QUESTION) -> List[Tuple[int, any]]:
+
+        if not isinstance(elements, (list, tuple, set)):
+            raise ValueError("The 'elements' argument must be a list, tuple, or set.")
+
+        elements = list(elements)  # Ensures it is a list to support indexing
+
+        if n > len(elements):
+            raise ValueError("The number of selected elements (m) cannot be greater than the total elements (n).")
+
+        return random.sample(list(enumerate(elements, start=1)), n)
 
 if __name__ == "__main__":
     Utils().load_db_from_json('questions.json')
