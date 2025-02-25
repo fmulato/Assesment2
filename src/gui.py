@@ -3,6 +3,7 @@ import customtkinter as ctk
 from PIL import Image
 import os
 import pygame
+import datetime
 
 #import user_management.py
 from user_management import UserManagement
@@ -71,10 +72,12 @@ class StartScreen:
         self.label_instructions.grid(row=0, column=1, pady=10)
 
         # Player 1:
-        self.label_player1 = ctk.CTkLabel(label_frame, text="Player 1:", font=font_instruction, text_color='green')
+        self.label_player1 = ctk.CTkLabel(label_frame, text=f"Player 1:", font=font_instruction, text_color='green')
         self.label_player1.grid(row=1, column=0, pady=5, sticky="ew")
+        self.label_player1_name = ctk.CTkLabel(label_frame, text="", font=font_instruction, text_color='green')
+        self.label_player1_name.grid(row=2, column=0, pady=5, sticky="ew")
         self.label_player1_age = ctk.CTkLabel(label_frame, text=self.age1, font=font_instruction, text_color='green')
-        self.label_player1_age.grid(row=2, column=0, pady=5, sticky="ew")
+        self.label_player1_age.grid(row=2, column=1, pady=5, sticky="ew")
 
         # versus
         self.label_vs = ctk.CTkLabel(label_frame, text="      VS      ", font=font_instruction, text_color='black')
@@ -83,8 +86,11 @@ class StartScreen:
         # Player 2:
         self.label_player2 = ctk.CTkLabel(label_frame, text="Player 2:", font=font_instruction, text_color='blue')
         self.label_player2.grid(row=1, column=2, pady=5, sticky="ew")
+        self.label_player2_name = ctk.CTkLabel(label_frame, text="", font=font_instruction,
+                                               text_color='blue')  # Label para o nome do jogador 2
+        self.label_player2_name.grid(row=2, column=2, pady=5, sticky="ew")
         self.label_player2_age = ctk.CTkLabel(label_frame, text=self.age2, font=font_instruction, text_color='blue')
-        self.label_player2_age.grid(row=2, column=2, pady=5, sticky="ew")
+        self.label_player2_age.grid(row=2, column=3, pady=5, sticky="ew")
 
         # Frame for player buttons
         self.button_frame = ctk.CTkFrame(self.root, fg_color="transparent")
@@ -153,6 +159,19 @@ class StartScreen:
         self.update_button_colors()
         self.update_start_button()
 
+        # Update player names
+        if len(self.selected_players) == 1:
+            self.label_player1_name.configure(text=f"{self.selected_players[0][0]} ({self.selected_players[0][1]})")
+            self.label_player2_name.configure(text="")
+        elif len(self.selected_players) == 2:
+            self.label_player1_name.configure(text=f"{self.selected_players[0][0]} ({self.selected_players[0][1]})")
+            self.label_player2_name.configure(text=f"{self.selected_players[1][0]} ({self.selected_players[1][1]})")
+        else:
+            self.label_player1_name.configure(text="")
+            self.label_player2_name.configure(text="")
+            self.label_player1_age.configure(text="")
+            self.label_player2_age.configure(text="")
+
     def update_button_colors(self):
         """Update the colors of the player buttons based on selection.
         Green for player 1, Blue for player 2."""
@@ -170,10 +189,25 @@ class StartScreen:
         """Enables the start button when 2 players are selected"""
         self.start_button.configure(state="normal" if len(self.selected_players) == 2 else "disabled")
 
-        # Update player names and ages
         if len(self.selected_players) == 2:
             self.player1, self.age1 = self.selected_players[0]
             self.player2, self.age2 = self.selected_players[1]
+
+            # Atualiza os labels corretamente
+            self.label_player1_name.configure(text=self.player1)
+            self.label_player2_name.configure(text=self.player2)
+        elif len(self.selected_players) == 1:
+            self.player1, self.age1 = self.selected_players[0]
+            self.player2, self.age2 = "", ""
+
+            self.label_player1_name.configure(text=self.player1)
+            self.label_player2_name.configure(text="")
+        else:
+            self.player1, self.age1 = "", ""
+            self.player2, self.age2 = "", ""
+
+            self.label_player1_name.configure(text="")
+            self.label_player2_name.configure(text="")
 
     def add_new_name(self):
         #AddNameDialog(self.root, self.user_manager)
@@ -205,7 +239,7 @@ class StartScreen:
 class AddNameDialog(ctk.CTkToplevel):
     """ Custom pop-up window for entering Name and Date of Birth using only customtkinter. """
     def __init__(self, parent, user_manager, start_screen):
-        super().__init__(parent)  # Use parent (self.root) para CTkToplevel
+        super().__init__(parent)  # Using parent (self.root) for CTkToplevel
         self.user_manager = user_manager
         self.start_screen = start_screen  # Referece to instance
         self.parent = parent
@@ -213,27 +247,58 @@ class AddNameDialog(ctk.CTkToplevel):
 
         self.title("Add New Player")
 
-        window_width = 300
-        window_height = 200
+        window_width = 290
+        window_height = 140
         RootUtils.center_window(self, window_width, window_height)
 
         self.grab_set()  # Make the window modal (force user interaction)
 
-        ctk.CTkLabel(self, text="Name:").pack(pady=5)
+        ctk.CTkLabel(self, text="Name:").grid(row=0, column=0, sticky="nsew")
         self.name_entry = ctk.CTkEntry(self)
-        self.name_entry.pack(pady=5)
+        self.name_entry.grid(row=0, column=1, sticky="nsew")
 
-        ctk.CTkLabel(self, text="Birthday (YYYY-MM-DD):").pack(pady=5)
         self.birthday_entry = ctk.CTkEntry(self)
-        self.birthday_entry.pack(pady=5)
+
+        # Label to birthday
+        ctk.CTkLabel(self, text="Select your Birthday:").grid(row=1, column=1, sticky="nsew")
+
+        # combo box for day
+        self.days = [str(i).zfill(2) for i in range(1, 32)]  # Dias de 01 a 31
+        self.selected_day = ctk.StringVar(value=self.days[0])  # Valor padrão
+        self.day_menu = ctk.CTkOptionMenu(self, variable=self.selected_day, values=self.days)
+        self.day_menu.configure(width=18)
+        self.day_menu.grid(row=2, column=0, sticky="nsew", padx=(10, 0))
+
+        # combo box for month
+        self.months = [
+                        "January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"
+                      ]
+        self.selected_month = ctk.StringVar(value=self.months[0])  # Valor padrão
+        self.month_menu = ctk.CTkOptionMenu(self, variable=self.selected_month, values=self.months)
+        self.month_menu.configure(width=35)
+        self.month_menu.grid(row=2, column=1, sticky="nsew")
+
+        # combo box for year
+        current_year = datetime.datetime.now().year
+        self.years = [str(year) for year in range(current_year - 15, current_year - 4)]
+        self.selected_year = ctk.StringVar(value=self.years[0])
+        self.year_menu = ctk.CTkOptionMenu(self, variable=self.selected_year, values=self.years)
+        self.year_menu.configure(width=25)
+        self.year_menu.grid(row=2, column=3, sticky="nsew")
 
         self.submit_button = ctk.CTkButton(self, text="OK", command=self.apply)
-        self.submit_button.pack(pady=10)
+        self.submit_button.grid(row=3, column=1, sticky="nsew", pady=(10, 0))
+
+    def save_birthday(self):
+        birthday_entry = f"{self.selected_year.get()}-{self.months.index(self.selected_month.get()) + 1:02}-{self.selected_day.get()}"
+        print(f"Birthday saved: {birthday_entry}")
+        return birthday_entry
 
     def apply(self):
         """ Save input values when OK is pressed """
         name = self.name_entry.get()
-        birthday = self.birthday_entry.get()
+        birthday = self.save_birthday()
 
         if not name or not birthday:
             CustomPopup(self, "Error", "Both fields are required.")
@@ -258,7 +323,6 @@ class CustomPopup(ctk.CTkToplevel):
         window_height = 200
         RootUtils.center_window(self, window_width, window_height)
 
-        #self.geometry("300x150")
         self.grab_set()  # Make modal
 
         label = ctk.CTkLabel(self, text=message, wraplength=250)
@@ -266,7 +330,6 @@ class CustomPopup(ctk.CTkToplevel):
 
         button = ctk.CTkButton(self, text="OK", command=self.destroy)
         button.pack(pady=10)
-
 
 
 class Gui:

@@ -1,4 +1,7 @@
-from user_management import UserManagement as UM
+"""
+This module contains utility functions to load questions into the database from a JSON file.
+Verifies if a question already exists in the database. If it does, it skips the insertion.
+"""""
 import json
 import sqlite3
 
