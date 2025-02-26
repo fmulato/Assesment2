@@ -1,14 +1,22 @@
+"""
+This module manages user data, players and quiz questions in a SQLite database using the sqlite3 library.
+It provides the following functionality:
+1. Database setup: Creates tables for players, scores, and questions if they do not exist in the database.
+2. User registration: Adds a new user to the database with a unique username and birthday.
+3. Age calculation: Calculates the age of a user based on their birthday.
+4. Age saving: Saves the user's age in the scores table.
+5. Quiz database creation: Creates a table for quiz questions if it does not exist.
+6. Player retrieval: Fetches all players and their latest recorded age from the scores table.
+"""
+
 import sqlite3
-import os
 from datetime import datetime
-import customtkinter as ctk
+from utils import CustomPopup
 
 #databse files path
 DB_PATH = "brainup.db"
-#DB_PATH = "users.db"
-#QUIZ_DB_PATH = "quiz.db"
 
-class UserManagement:
+class DataBase:
     def __init__(self):
         self.create_tables()
 
@@ -20,12 +28,12 @@ class UserManagement:
             CREATE TABLE IF NOT EXISTS players (
                 "id_player" INTEGER PRIMARY KEY AUTOINCREMENT,
                 "username" TEXT NOT NULL UNIQUE,
-                "birthday" TEXT NOT NULL
+                "birthday" DATE NOT NULL
             );
             CREATE TABLE IF NOT EXISTS scores (
                 "id_score" INTEGER PRIMARY KEY AUTOINCREMENT,
                 "id_player" INTEGER,
-                "date_time" TEXT DEFAULT CURRENT_TIMESTAMP,
+                "date_time" DATETIME DEFAULT CURRENT_TIMESTAMP,
                 "age" INTEGER NOT NULL,
                 "current_score" INTEGER DEFAULT 0,
                 FOREIGN KEY (id_player) REFERENCES players(id_player) ON DELETE CASCADE
@@ -48,8 +56,9 @@ class UserManagement:
         """ Adds a new user to the database. """
         try:
             birthday = datetime.strptime(birthday, "%Y-%m-%d")
-        except ValueError:
-            CustomPopup("Error", "Invalid date format. Use YYYY-MM-DD.")
+            print(birthday)
+        except ValueError as e:
+            CustomPopup("Error", f"An error occurred: {e}")
             return False
 
         connection = sqlite3.connect(DB_PATH)
@@ -60,7 +69,7 @@ class UserManagement:
         existing_user = cursor.fetchone()
 
         if existing_user:
-            CustomPopup("Error", "Username already exists. Try a different one.")
+            CustomPopup(self,"Error", "Username already exists. Try a different one.")
             return False
 
         try:
@@ -74,11 +83,7 @@ class UserManagement:
         finally:
             connection.close()
 
-    def calculate_age(self, birthday):
-        """ Calculate age from birth date. """
-        birth_date = datetime.strptime(birthday, "%Y-%m-%d")
-        today = datetime.today()
-        return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
 
     def save_age_to_scores(self, username, age):
         """ Saves the user's age in the scores table using id_player. """
@@ -128,10 +133,11 @@ class UserManagement:
         cursor = connection.cursor()
 
         query = """
-            SELECT p.username, COALESCE(s.age, (SELECT age FROM scores WHERE id_player = p.id_player ORDER BY date_time DESC LIMIT 1)) 
-            FROM players p 
-            LEFT JOIN scores s ON p.id_player = s.id_player 
-            GROUP BY p.username
+            SELECT username, 
+                   (strftime('%Y', 'now') - strftime('%Y', birthday)) - 
+                   (strftime('%m-%d', 'now') < strftime('%m-%d', birthday)) AS age
+            FROM 
+                   players;
         """
         cursor.execute(query)
         players = cursor.fetchall()
@@ -143,25 +149,5 @@ class UserManagement:
         return players
 
 
-class CustomPopup(ctk.CTkToplevel):
-    """ Custom pop-up window for success and error messages """
-    def __init__(self, title, message):
-        super().__init__()
-        self.title(title)
 
-        from gui import RootUtils
-
-        gui = RootUtils()
-        window_width = 300
-        window_height = 150
-        gui.center_window(self, window_width, window_height)
-
-        #self.geometry("300x150")
-        self.grab_set()  # Make modal
-
-        label = ctk.CTkLabel(self, text=message, wraplength=250)
-        label.pack(pady=10)
-
-        button = ctk.CTkButton(self, text="OK", command=self.destroy)
-        button.pack(pady=10)
 

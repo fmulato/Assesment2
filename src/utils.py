@@ -6,6 +6,8 @@ import json
 import sqlite3
 import random
 from typing import Sequence, List, Tuple
+import customtkinter as ctk
+from datetime import datetime
 
 NUMBER_QUESTION = 3
 
@@ -77,6 +79,32 @@ class Utils:
 
         return random.sample(list(enumerate(elements, start=1)), n)
 
-if __name__ == "__main__":
-    Utils().load_db_from_json('questions.json')
+    def calculate_age(self, birthday):
+        """ Calculate age from birth date. """
+        birth_date = datetime.strptime(birthday, "%Y-%m-%d")
+        today = datetime.today()
+        return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
+
+class CustomPopup(ctk.CTkToplevel):
+    """ Custom pop-up window for success and error messages """
+    def __init__(self, title, message):
+        super().__init__()
+        self.title(title)
+
+        from gui import RootUtils
+
+        gui = RootUtils()
+        window_width = 300
+        window_height = 150
+        gui.center_window(self, window_width, window_height)
+
+        self.grab_set()  # Make modal
+
+        label = ctk.CTkLabel(self, text=message, wraplength=250)
+        label.pack(pady=10)
+
+        button = ctk.CTkButton(self, text="OK", command=self.destroy)
+        button.pack(pady=10)
+
 
