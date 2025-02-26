@@ -65,26 +65,28 @@ class Utils:
 
         return result is not None
 
-
-
-    def select_random_elements(elements: Sequence, n: int = NUMBER_QUESTION) -> List[Tuple[int, any]]:
+    def select_random_elements(self, elements, n=NUMBER_QUESTION) -> List[Tuple[int, any]]:
 
         if not isinstance(elements, (list, tuple, set)):
             raise ValueError("The 'elements' argument must be a list, tuple, or set.")
-
-        elements = list(elements)  # Ensures it is a list to support indexing
 
         if n > len(elements):
             raise ValueError("The number of selected elements (m) cannot be greater than the total elements (n).")
 
         return random.sample(list(enumerate(elements, start=1)), n)
 
+
+    def shuffle_questions(self, options):
+        """Shuffle the questions and return a dictionary with the question number original order and the question data."""
+        # todo: implement this method
+        pass
+
     def calculate_age(self, birthday):
         """ Calculate age from birth date. """
         birth_date = datetime.strptime(birthday, "%Y-%m-%d")
         today = datetime.today()
-        return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
-
+        age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+        return age
 
 class CustomPopup(ctk.CTkToplevel):
     """ Custom pop-up window for success and error messages """

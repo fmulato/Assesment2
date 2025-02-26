@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import pygame
 import datetime
+import quiz_logic as ql
 
 #import database_management.py
 from database_management import DataBase
@@ -229,7 +230,7 @@ class StartScreen:
 
         # Open the game window (Assuming you have a game class)
         game_window = ctk.CTk()
-        game = Gui(game_window, player1, age1, player2, age2)  # Assuming `Gui` is your game class
+        game = GameScreen(game_window, player1, age1, player2, age2)
         game.run()
 
 class AddNameDialog(ctk.CTkToplevel):
@@ -310,7 +311,7 @@ class AddNameDialog(ctk.CTkToplevel):
             print(self)
 
 
-class Gui:
+class GameScreen:
     def __init__(self, root, player1='Player 1', age1="", player2='Player 2', age2=""):
         # Create the main window
         self.root = root
@@ -323,9 +324,11 @@ class Gui:
 
         pygame.mixer.init()
 
-        # Code for the Gui class
+        # Code for the GameScreen class
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
+
+        self.logic = ql.Logic(self)
 
         # Force the main window to appear centered on the screen
         RootUtils.center_window(self.root, SIZE_WIDTH, SIZE_HEIGHT)
@@ -395,22 +398,36 @@ class Gui:
 
         # Questions
         self.category_label = ctk.CTkLabel(self.frame_center_top, text="Category:", font=font_categ, text_color='blue')
-        self.category_label.pack(pady=5)
-        self.question_label = ctk.CTkLabel(
-            self.frame_center_top, text="Question will appear here", font=font_quest, wraplength=500)
-        self.question_label.pack(pady=20)
+        self.category_label.grid(row=0, column=0, pady=10, padx=10)
+        self.question_label = ctk.CTkLabel(self.frame_center_top, text="Question will appear here", font=font_quest, wraplength=500)
+        self.question_label.grid(row=1, column=0, pady=10, padx=10)
+
+        # Options
+        self.options_var = ctk.StringVar()
+        self.option_buttons = []
+        for i in range(4):
+            option_button = ctk.CTkRadioButton(
+                self.frame_center_middle,
+                text=f"Option {i + 1}",
+                variable=self.options_var,
+                value=str(i + 1),
+                font=("Arial", 14),
+            )
+            option_button.grid(row=i, column=0, sticky="nsew", padx=10, pady=10)
+            self.option_buttons.append(option_button)
 
         # Results
         self.winner_label = ctk.CTkLabel(self.frame_center_middle, text="Winner:", font=font_categ, text_color='green')
         self.result_label = ctk.CTkLabel(self.frame_center_middle, text="", font=("Arial", 16), text_color="black")
-        self.result_label.pack(pady=10)
+        self.result_label.grid(pady=10)
 
         # Load questions
         # self.logic.save_player_info()
-        # self.questions = self.logic.load_questions("questions.json")
-        # self.selected_questions = select_random_elements(self.questions)
+        self.questions = DataBase().load_questions()
+        self.selected_questions = Utils().select_random_elements(self.questions)
         self.current_question_index = 0
-        # self.logic.display_question()... # Frame for buttons
+        self.logic.display_question()
+
         self.frame_center_bottom.grid_columnconfigure(0, weight=1)
         self.frame_center_bottom.grid_columnconfigure(1, weight=1)
         self.frame_center_bottom.grid_columnconfigure(2, weight=1)
@@ -420,8 +437,7 @@ class Gui:
         #command=self.logic.check_answer,
         self.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
-        self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next",
-                                         command=lambda: self.countdown(LIMIT_TIME), font=("Arial", 14), width=100)
+        self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next",command=lambda: self.countdown(LIMIT_TIME), font=("Arial", 14), width=100)
         #command = self.logic.next_question,
         self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
         # self.next_button.grid_forget()

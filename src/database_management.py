@@ -148,6 +148,17 @@ class DataBase:
 
         return players
 
+    def load_questions(self):
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
+
+        cursor.execute("SELECT * FROM questions")
+        questions = cursor.fetchall()
+
+        connection.close()
+
+        return questions
+
 
 
 
