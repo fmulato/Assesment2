@@ -278,7 +278,7 @@ class AddNameDialog(ctk.CTkToplevel):
 
         # combo box for year
         current_year = datetime.datetime.now().year
-        self.years = [str(year) for year in range(current_year - 12, current_year - 8)]
+        self.years = [str(year) for year in range(current_year - 15, current_year - 8)]
         self.selected_year = ctk.StringVar(value=self.years[0])
         self.year_menu = ctk.CTkOptionMenu(self, variable=self.selected_year, values=self.years)
         self.year_menu.configure(width=25)
@@ -289,7 +289,6 @@ class AddNameDialog(ctk.CTkToplevel):
 
     def save_birthday(self):
         birthday_entry = f"{self.selected_year.get()}-{self.months.index(self.selected_month.get()) + 1:02}-{self.selected_day.get()}"
-        print(f"Birthday saved: {birthday_entry}")
         return birthday_entry
 
     def apply(self):
@@ -303,12 +302,9 @@ class AddNameDialog(ctk.CTkToplevel):
 
         success = self.db_manager.register_user(name, birthday)
         if success:
-            # = Utils().calculate_age(birthday)
-            #self.db_manager.save_age_to_scores(name, age)
             self.start_screen.display_player_buttons()
             #self.destroy()  # Close the pop-up after success
             self.withdraw()  # Hide the pop-up after success
-            print(self)
 
 
 class GameScreen:
@@ -432,17 +428,18 @@ class GameScreen:
         self.frame_center_bottom.grid_columnconfigure(1, weight=1)
         self.frame_center_bottom.grid_columnconfigure(2, weight=1)
 
-        self.submit_button = ctk.CTkButton(self.frame_center_bottom, text="Submit",
+        self.submit_button = ctk.CTkButton(self.frame_center_bottom, text="Submit", command=self.logic.check_answer,
                                            font=("Arial", 14), width=100)
-        #command=self.logic.check_answer,
+
         self.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
-        self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next",command=lambda: self.countdown(LIMIT_TIME), font=("Arial", 14), width=100)
-        #command = self.logic.next_question,
+        self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next",command = self.logic.next_question,
+                                         font=("Arial", 14), width=100)
+        # countdown(LIMIT_TIME)
         self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
         # self.next_button.grid_forget()
 
-        self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz",
+        self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz", command=self.logic.restart_quiz,
                                             font=("Arial", 14), width=100)
         #command=self.logic.restart_quiz,
         self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
