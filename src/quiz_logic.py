@@ -76,8 +76,10 @@ class Logic():
         self.gs.winner_label.grid(pady=(20, 0))
         self.gs.restart_button.grid_forget()
 
-        for button in self.gs.option_buttons:
-            button.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
+        for i, button in enumerate(self.gs.option_buttons):
+            button.grid(row=3 + i, column=0, padx=10, pady=10, sticky="ew")
+            # Reset button text before updating
+            button.configure(text="")
 
         self.gs.submit_button.grid(row=4, column=0, padx=10, pady=10, sticky="ew")
         self.gs.result_label.configure(text="")
