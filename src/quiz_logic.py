@@ -15,16 +15,28 @@ class Logic():
         if self.gs.current_question_index < len(self.gs.selected_questions):
             self.gs.question_number, self.gs.question_data = self.gs.selected_questions[self.gs.current_question_index]
             self.gs.category_label.configure(text=f"Category: {self.gs.question_data[1]}")
-            self.gs.question_label.configure(
-                text=f"{self.gs.current_question_index + 1}. {self.gs.question_data[2]}")
+            self.gs.question_label.configure(text=f"{self.gs.current_question_index + 1}. {self.gs.question_data[2]}")
 
-            for i, option in enumerate(self.gs.question_data[3:7]):
+            # Extract options and shuffle them
+            # Options 1-4
+            options = self.gs.question_data[3:7]
+            # Correct answer index
+            correct_answer = self.gs.question_data[7]
+
+            # Shuffle answers using Utils
+            utils = Utils()
+            shuffled_options, new_correct_answer = utils.shuffle_answers(options, correct_answer)
+
+            for i, option in enumerate(shuffled_options):
                 self.gs.option_buttons[i].configure(text=option, text_color="black")
                 self.gs.option_buttons[i]._value = str(i + 1)
 
+            #  Update the correct answer index in question data
+            self.gs.question_data = list(self.gs.question_data)  # Convert tuple to list
+            self.gs.question_data[7] = new_correct_answer  # Update correct answer position
+
             self.gs.options_var.set(None)
             self.gs.result_label.configure(text="")
-            #self.gs.next_button.grid_forget()
         else:
             self.gs.question_label.configure(text="No more questions!")
             self.determine_quiz_winner()

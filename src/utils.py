@@ -22,11 +22,16 @@ class Utils:
 
         return random.sample(list(enumerate(elements, start=1)), n)
 
+    def shuffle_answers(self, options, correct_answer):
+        """Shuffle the answers and return a new randomized list with the correct answer index updated."""
+        indexed_options = list(enumerate(options))  # Attach original indices
+        random.shuffle(indexed_options)  # Shuffle the options
 
-    def shuffle_answers(self, options):
-        """Shuffle the answers to display them in a random order."""
-        # todo: implement this method
-        pass
+        # Extract shuffled options and find the new index of the correct answer
+        shuffled_options = [option[1] for option in indexed_options]
+        new_correct_index = [i for i, option in enumerate(indexed_options) if option[0] == correct_answer - 1][0] + 1
+
+        return shuffled_options, new_correct_index  # Return shuffled options & updated correct answer index
 
     def calculate_age(self, birthday):
         """ Calculate age from birth date. """
