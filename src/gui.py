@@ -41,6 +41,13 @@ class StartScreen:
         self.add_name_button = ctk.CTkButton(self.root, text="Add New Name", command=self.add_new_name)
         self.add_name_button.grid(row=4, column=0, columnspan=4, pady=10)
 
+
+        # Add update_questions button
+        self.update_questions_button = ctk.CTkButton(self.root, text="Update Questions", command=self.update_questions)
+        self.update_questions_button.grid(row=5, column=0, columnspan=4, pady=10)  # Place below "Add New Name"
+
+
+
         # Force the main window to appear centered on the screen
         RootUtils.center_window(self.root, SIZE_WIDTH, SIZE_HEIGHT)
 
@@ -104,6 +111,13 @@ class StartScreen:
         self.start_button.grid(row=2, column=0, pady=10)
 
         self.root.mainloop()
+
+    def update_questions(self):
+        """Reload questions.json and update the database."""
+        db = DataBase()
+        db.load_db_from_json("questions.json")  # Load questions from JSON
+        CustomPopup("Success", "Questions database has been updated!")
+
 
     def display_player_buttons(self):
         # Clear the button frame, before adding new buttons

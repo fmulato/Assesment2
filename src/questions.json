@@ -1,0 +1,512 @@
+[
+  {
+    "category": "Maori",
+    "question": "What is the Māori word for 'ocean'?",
+    "options": ["Moana", "Awa", "Rangi", "Whenua"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "Which plant is used in traditional Māori weaving?",
+    "options": ["Harakeke", "Kauri", "Pōhutukawa", "Rimu"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is a traditional Māori meeting house called?",
+    "options": ["Wharenui", "Marae", "Pā", "Whare Kai"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "Which Māori mythological figure fished up the North Island?",
+    "options": ["Māui", "Rangi", "Tangaroa", "Tāne"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the meaning of 'mana' in Māori culture?",
+    "options": ["Respect", "Food", "Dance", "Song"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori word for 'family'?",
+    "options": ["Whānau", "Kai", "Tama", "Waka"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What does 'Aotearoa' mean in Māori?",
+    "options": ["Land of the Long White Cloud", "Great Ocean", "Sacred Land", "Ancestors' Home"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "Which bird is considered sacred in Māori culture?",
+    "options": ["Kiwi", "Tui", "Kea", "Huia"],
+    "correct_answer": "4"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori word for 'earth'?",
+    "options": ["Rangi", "Whenua", "Moana", "Tāne"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Maori",
+    "question": "Which Māori tradition involves facial tattooing?",
+    "options": ["Taiaha", "Poi", "Moko", "Haka"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Maori",
+    "question": "What is a Māori war dance called?",
+    "options": ["Waiata", "Haka", "Pūkana", "Poi"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori word for 'love'?",
+    "options": ["Aroha", "Mana", "Tika", "Whenua"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the name of the Māori god of the sea?",
+    "options": ["Tangaroa", "Ranginui", "Tāne Mahuta", "Ruaumoko"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is a traditional Māori food-cooking method using heated stones?",
+    "options": ["Hāngi", "Pōwhiri", "Whakapapa", "Kapa Haka"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori word for 'mountain'?",
+    "options": ["Moana", "Maunga", "Awa", "Whenua"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Maori",
+    "question": "Which Māori canoe is believed to have carried the first Polynesians to New Zealand?",
+    "options": ["Tainui", "Aotea", "Mataatua", "All of the above"],
+    "correct_answer": "4"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori word for 'star'?",
+    "options": ["Ra", "Whetū", "Marama", "Hine"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Maori",
+    "question": "Which New Zealand city has the largest Māori population?",
+    "options": ["Auckland", "Wellington", "Christchurch", "Rotorua"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori word for 'sun'?",
+    "options": ["Ra", "Marama", "Whenua", "Whetū"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is a Māori carving called?",
+    "options": ["Whakairo", "Waka", "Kōwhaiwhai", "Pōwhiri"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is a traditional Māori welcome ceremony?",
+    "options": ["Kapa Haka", "Wero", "Pōwhiri", "Haka"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Maori",
+    "question": "Who are the ancestors of Māori people?",
+    "options": ["Europeans", "Polynesians", "Asians", "Africans"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori name for New Zealand?",
+    "options": ["Aotearoa", "Te Moana", "Whenua Nui", "Te Wai Pounamu"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What does the Māori word 'kia ora' mean?",
+    "options": ["Goodbye", "Thank you", "Hello", "Excuse me"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Maori",
+    "question": "Which Māori festival celebrates the New Year?",
+    "options": ["Waitangi Day", "Matariki", "Hangi Day", "Hikoi"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori word for 'river'?",
+    "options": ["Moana", "Awa", "Whenua", "Maunga"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Maori",
+    "question": "Which plant is commonly used in Māori medicine?",
+    "options": ["Kawakawa", "Harakeke", "Pōhutukawa", "Tōtara"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Maori",
+    "question": "What is the Māori term for genealogy and ancestry?",
+    "options": ["Tangata", "Tupuna", "Whakapapa", "Iwi"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Maori",
+    "question": "Which is a traditional Māori greeting?",
+    "options": ["Hongi", "Wero", "Pōwhiri", "Haka"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Science",
+    "question": "What is the chemical symbol for water?",
+    "options": ["CO2", "H2O", "O2", "NaCl"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "Which planet is known as the Red Planet?",
+    "options": ["Earth", "Mars", "Jupiter", "Venus"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "What force keeps us on the ground?",
+    "options": ["Magnetism", "Gravity", "Friction", "Inertia"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "What gas do plants absorb from the atmosphere?",
+    "options": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What part of the plant conducts photosynthesis?",
+    "options": ["Roots", "Stem", "Leaves", "Flower"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What is the largest organ in the human body?",
+    "options": ["Heart", "Liver", "Skin", "Brain"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What gas do humans breathe in to survive?",
+    "options": ["Oxygen", "Carbon Dioxide", "Helium", "Nitrogen"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Science",
+    "question": "Which planet is closest to the Sun?",
+    "options": ["Earth", "Venus", "Mercury", "Mars"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What is the chemical symbol for gold?",
+    "options": ["Au", "Ag", "Pb", "Fe"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Science",
+    "question": "How many bones are in the adult human body?",
+    "options": ["206", "305", "150", "256"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Science",
+    "question": "What part of the brain controls balance and coordination?",
+    "options": ["Cerebrum", "Brainstem", "Cerebellum", "Hippocampus"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What is the main gas found in Earth's atmosphere?",
+    "options": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "Which blood type is the universal donor?",
+    "options": ["A", "B", "O", "AB"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What unit is used to measure force?",
+    "options": ["Joule", "Newton", "Watt", "Ampere"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "What is the process by which plants make their own food?",
+    "options": ["Digestion", "Respiration", "Photosynthesis", "Fermentation"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "Which is the hardest natural substance on Earth?",
+    "options": ["Gold", "Iron", "Diamond", "Quartz"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What is the speed of light in a vacuum?",
+    "options": ["300,000 km/s", "150,000 km/s", "100,000 km/s", "500,000 km/s"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Science",
+    "question": "What is the boiling point of water at sea level?",
+    "options": ["100°C", "0°C", "50°C", "200°C"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Science",
+    "question": "Which planet has the most moons?",
+    "options": ["Earth", "Jupiter", "Mars", "Saturn"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "What type of energy is derived from the Sun?",
+    "options": ["Kinetic", "Nuclear", "Solar", "Chemical"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "Which part of the cell contains genetic material?",
+    "options": ["Nucleus", "Mitochondria", "Cytoplasm", "Ribosome"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "Science",
+    "question": "What is the most abundant element in the universe?",
+    "options": ["Oxygen", "Hydrogen", "Carbon", "Helium"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "What gas do animals exhale?",
+    "options": ["Oxygen", "Carbon Dioxide", "Hydrogen", "Nitrogen"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "What is the smallest unit of life?",
+    "options": ["Molecule", "Atom", "Cell", "Organ"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What is the Earth's primary source of energy?",
+    "options": ["The Moon", "The Sun", "The Earth's Core", "Volcanoes"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "Which part of the body is affected by pneumonia?",
+    "options": ["Heart", "Lungs", "Liver", "Brain"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "What type of rock is formed from cooled lava?",
+    "options": ["Sedimentary", "Metamorphic", "Igneous", "Granite"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "Science",
+    "question": "What is the process of water changing from liquid to gas called?",
+    "options": ["Condensation", "Evaporation", "Sublimation", "Precipitation"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "Science",
+    "question": "What type of blood cells fight infections?",
+    "options": ["Red Blood Cells", "Platelets", "White Blood Cells", "Plasma"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "English",
+    "question": "What is the past tense of 'go'?",
+    "options": ["Goed", "Went", "Goes", "Gone"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "Which of the following is a noun?",
+    "options": ["Run", "Happiness", "Quickly", "Beautiful"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "What is a synonym for 'big'?",
+    "options": ["Tiny", "Large", "Small", "Little"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "Which of these sentences is correct?",
+    "options": ["Their going to the park.", "There going to the park.", "They're going to the park.", "Theirs going to the park."],
+    "correct_answer": "3"
+  },
+  {
+    "category": "English",
+    "question": "What type of word is 'quickly'?",
+    "options": ["Noun", "Adjective", "Adverb", "Verb"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "English",
+    "question": "What is the opposite of 'happy'?",
+    "options": ["Sad", "Excited", "Funny", "Loud"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "Which of these words is a verb?",
+    "options": ["Run", "Chair", "Bright", "Soft"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "Which word is a conjunction?",
+    "options": ["And", "Dog", "House", "Play"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "What punctuation ends a question?",
+    "options": ["Period", "Comma", "Question Mark", "Exclamation Mark"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "English",
+    "question": "What is the plural of 'mouse'?",
+    "options": ["Mouses", "Mice", "Mousees", "Mices"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "Which word is a pronoun?",
+    "options": ["Car", "She", "Table", "Run"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "What is the correct spelling?",
+    "options": ["Definately", "Definitely", "Defanitely", "Definately"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "Which word is a preposition?",
+    "options": ["Run", "Under", "Book", "Fast"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "What is the past tense of 'eat'?",
+    "options": ["Ate", "Eated", "Eats", "Eating"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "What is a homophone?",
+    "options": ["Words that sound the same but have different meanings", "Words that are spelled the same", "Words that mean the same", "Words that rhyme"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "Which of these is a compound word?",
+    "options": ["Dog", "Jump", "Sunflower", "Run"],
+    "correct_answer": "3"
+  },
+  {
+    "category": "English",
+    "question": "Which word is an adjective?",
+    "options": ["Quick", "Run", "Sing", "Loudly"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "What is the antonym of 'hot'?",
+    "options": ["Cold", "Warm", "Boiling", "Freezing"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "Which word is a proper noun?",
+    "options": ["City", "John", "Car", "Fast"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "What is the correct plural of 'child'?",
+    "options": ["Childs", "Children", "Childes", "Childen"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "Which sentence is punctuated correctly?",
+    "options": ["I like apples bananas, and oranges.", "I like apples, bananas, and oranges.", "I like, apples bananas and oranges.", "I, like apples bananas and oranges."],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "Which of these is an interjection?",
+    "options": ["Wow!", "Run", "Slow", "Book"],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "Which sentence uses an apostrophe correctly?",
+    "options": ["Its a nice day.", "It's a nice day.", "Its' a nice day.", "It is' a nice day."],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "What is a synonym for 'fast'?",
+    "options": ["Slow", "Quick", "Lazy", "Tired"],
+    "correct_answer": "2"
+  },
+  {
+    "category": "English",
+    "question": "Which sentence is in the future tense?",
+    "options": ["I will go to the store.", "I went to the store.", "I go to the store.", "I was going to the store."],
+    "correct_answer": "1"
+  },
+  {
+    "category": "English",
+    "question": "What is a complete sentence?",
+    "options": ["Running fast.", "The dog.", "She runs every morning.", "A big house."],
+    "correct_answer": "3"
+  },
+  {
+    "category": "English",
+    "question": "Which sentence is written in passive voice?",
+    "options": ["The dog chased the cat.", "The cat was chased by the dog.", "The boy eats an apple.", "She is reading a book."],
+    "correct_answer": "2"
+  }
+]
