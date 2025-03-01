@@ -220,6 +220,15 @@ class StartScreen:
             CustomPopup("Warning!", "Select two players to start the game.")
             return  # Ensure exactly two players are selected
 
+        # Check if questions exist in the database
+        from database_management import DataBase
+        db = DataBase()
+        questions = db.load_questions()
+        if not questions:  # If no questions are found
+            CustomPopup("Error!", "No questions are available. Please install 'questions.json'.")
+            return
+
+
         player1, age1 = self.selected_players[0]
         player2, age2 = self.selected_players[1]
 
