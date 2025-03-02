@@ -205,7 +205,7 @@ class StartScreen:
             self.player1, self.age1 = self.selected_players[0]
             self.player2, self.age2 = self.selected_players[1]
 
-            # Atualiza os labels corretamente
+            # Update player names
             self.label_player1_name.configure(text=self.player1)
             self.label_player2_name.configure(text=self.player2)
         elif len(self.selected_players) == 1:
@@ -331,6 +331,7 @@ class AddNameDialog(ctk.CTkToplevel):
 
 
 class GameScreen:
+
     def __init__(self, root, player1='Player 1', age1="", player2='Player 2', age2=""):
         # Create the main window
         self.root = root
@@ -347,12 +348,8 @@ class GameScreen:
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
 
-        self.logic = ql.Logic(self)
-
         # Force the main window to appear centered on the screen
         RootUtils.center_window(self.root, SIZE_WIDTH, SIZE_HEIGHT)
-
-        #self.logic = ql.Logic(self)
 
         # Fonts
         font_player = ctk.CTkFont(family="Arial", size=18, weight="bold")
@@ -445,54 +442,60 @@ class GameScreen:
         self.questions = DataBase().load_questions()
         self.selected_questions = Utils().select_random_elements(self.questions)
         self.current_question_index = 0
-        self.logic.display_question()
+
 
         self.frame_center_bottom.grid_columnconfigure(0, weight=1)
         self.frame_center_bottom.grid_columnconfigure(1, weight=1)
         self.frame_center_bottom.grid_columnconfigure(2, weight=1)
 
-        self.submit_button = ctk.CTkButton(self.frame_center_bottom, text="Submit", command=self.logic.check_answer,
-                                           font=("Arial", 14), width=100)
 
-        self.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
-
-        self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next",command = self.logic.next_question,
-                                         font=("Arial", 14), width=100)
-        # countdown(LIMIT_TIME)
-        self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
-        # self.next_button.grid_forget()
-
-        self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz", command=self.logic.restart_quiz,
-                                            font=("Arial", 14), width=100)
-        #command=self.logic.restart_quiz,
-        self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
-        # self.restart_button.grid_forget()
 
         self.exit_button = ctk.CTkButton(self.frame_center_bottom, text="Exit",
                                             command=self.exit, font=("Arial", 14), width=100)
         self.exit_button.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
-        # self.restart_button.grid_forget()
 
         self.config_button = ctk.CTkButton(self.frame_center_bottom, text="Select New Players",
                                          command=self.back_to_start_screen, font=("Arial", 14), width=100)
         self.config_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
         # self.restart_button.grid_forget()
 
+        # label to show the current player
+        self.turn_label = ctk.CTkLabel(self.frame_center_bottom, text="", font=("Arial", 16), text_color="black")
+        self.turn_label.grid(row=2, column=0, columnspan=3, pady=10)
+
         self.timer = ctk.CTkLabel(self.frame_center_bottom, font=("Arial", 24))
         self.timer.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
         self.timer.grid_forget()
 
+        self.logic = ql.Logic(self)
+
+        self.submit_button = ctk.CTkButton(self.frame_center_bottom, text="Submit", command=self.logic.check_answer, font=("Arial", 14), width=100)
+        self.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+
+        self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next", command=self.logic.next_question, font=("Arial", 14), width=100)
+        self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+
+        self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz", command=self.logic.restart_quiz, font=("Arial", 14), width=100)
+        self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
+
+        self.logic.display_question()
+
+
     def run(self):
         self.root.mainloop()
 
+    def get_current_player_name(self):
+        return self.player1 if self.logic.current_player == 1 else self.player2
+
     def countdown(self, count):
+
         self.timer.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
         self.timer.configure(text=str(count), text_color="red")
 
         if count > 0:
             self.root.after(1000, self.countdown, count - 1)
 
-            if count == LIMIT_TIME:
+            if count == self.logic.time_limit:
                 pygame.mixer.music.load("tic-tac.mp3")
                 pygame.mixer.music.play(loops=-1, fade_ms=500)
 
@@ -500,11 +503,15 @@ class GameScreen:
             self.timer.configure(text="Time's up!")
             pygame.mixer.music.stop()
             pygame.mixer.music.load("buzz.mp3")
-            pygame.mixer.music.play()
+            pygame.mixer.music.play(loops=-1, fade_ms=500)
+            self.logic.time_up()  # Call time_up method in Logic
+
+    def stop_timer(self):
+        self.timer.grid_forget()  # Hide the timer
+        pygame.mixer.music.stop()  # Stop the sound
 
     def exit(self):
         quit()
-
 
     def config(self):
         pass
@@ -514,3 +521,5 @@ class GameScreen:
         self.root.withdraw()
         StartScreen()
 
+if __name__ == "__main__":
+    StartScreen()

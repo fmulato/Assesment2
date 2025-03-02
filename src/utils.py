@@ -8,7 +8,7 @@ from typing import Sequence, List, Tuple
 import customtkinter as ctk
 from datetime import datetime
 
-NUMBER_QUESTION = 2
+NUMBER_QUESTION = 3
 
 class Utils:
 
@@ -22,23 +22,38 @@ class Utils:
 
         return random.sample(list(enumerate(elements, start=1)), n)
 
+    # def shuffle_answers(self, options, correct_answer):
+    #     """Shuffle the answers and return a new randomized list with the correct answer index updated."""
+    #     indexed_options = list(enumerate(options))  # Attach original indices
+    #     random.shuffle(indexed_options)  # Shuffle the options
+    #
+    #     # Extract shuffled options and find the new index of the correct answer
+    #     shuffled_options = [option[1] for option in indexed_options]
+    #     new_correct_index = [i for i, option in enumerate(indexed_options) if option[0] == correct_answer - 1][0] + 1
+    #
+    #     return shuffled_options, new_correct_index  # Return shuffled options & updated correct answer index
+    #
+    # def calculate_age(self, birthday):
+    #     """ Calculate age from birth date. """
+    #     birth_date = datetime.strptime(birthday, "%Y-%m-%d")
+    #     today = datetime.today()
+    #     age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+    #     return age
+
     def shuffle_answers(self, options, correct_answer):
         """Shuffle the answers and return a new randomized list with the correct answer index updated."""
-        indexed_options = list(enumerate(options))  # Attach original indices
-        random.shuffle(indexed_options)  # Shuffle the options
+        indexed_options = list(enumerate(options, start=1))  # Mantém os índices originais (1 a 4)
+        random.shuffle(indexed_options)  # Embaralha as opções
 
-        # Extract shuffled options and find the new index of the correct answer
+        # create a dictionary to map the original index to the new index
+        index_mapping = {orig_idx: new_idx + 1 for new_idx, (orig_idx, _) in enumerate(indexed_options)}
+
+        # Find the new index of the correct answer
+        new_correct_index = index_mapping[correct_answer]
+
+        # Return shuffled options, updated correct answer index, and index
         shuffled_options = [option[1] for option in indexed_options]
-        new_correct_index = [i for i, option in enumerate(indexed_options) if option[0] == correct_answer - 1][0] + 1
-
-        return shuffled_options, new_correct_index  # Return shuffled options & updated correct answer index
-
-    def calculate_age(self, birthday):
-        """ Calculate age from birth date. """
-        birth_date = datetime.strptime(birthday, "%Y-%m-%d")
-        today = datetime.today()
-        age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
-        return age
+        return shuffled_options, new_correct_index, index_mapping
 
 class CustomPopup(ctk.CTkToplevel):
     """ Custom pop-up window for success and error messages """

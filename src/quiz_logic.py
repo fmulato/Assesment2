@@ -6,10 +6,18 @@ It provides the following functionality:
 3. Determine quiz winner: Determines the winner of the quiz based on the scores of the players.
 """
 from utils import Utils
+import gui
 
 class Logic():
     def __init__(self, gs):
         self.gs = gs
+        self.current_player = 1  # 1 for Player 1, 2 for Player 2
+        self.time_limit = 15  # 15 seconds for each player to answer
+        self.timer_running = False  # To track if the timer is running
+
+    def start_timer(self):
+        self.timer_running = True
+        self.gs.countdown(self.time_limit)
 
     def display_question(self):
         if self.gs.current_question_index < len(self.gs.selected_questions):
@@ -25,13 +33,16 @@ class Logic():
 
             # Shuffle answers using Utils
             utils = Utils()
-            shuffled_options, new_correct_answer = utils.shuffle_answers(options, correct_answer)
+            #shuffled_options, new_correct_answer = utils.shuffle_answers(options, correct_answer)
+
+            shuffled_options, new_correct_answer, index_mapping = utils.shuffle_answers(options, correct_answer)
+            self.gs.index_mapping = index_mapping  # Armazena o mapeamento para uso posterior
 
             for i, option in enumerate(shuffled_options):
                 self.gs.option_buttons[i].configure(text=option, text_color="black")
                 self.gs.option_buttons[i]._value = str(i + 1)
 
-            #  Update the correct answer index in question data
+                #  Update the correct answer index in question data
             self.gs.question_data = list(self.gs.question_data)  # Convert tuple to list
             self.gs.question_data[7] = new_correct_answer  # Update correct answer position
 
@@ -44,27 +55,57 @@ class Logic():
                 button.grid_forget()
             self.gs.submit_button.grid_forget()
             self.gs.result_label.configure(text="")
-            #self.gs.next_button.grid_forget()
-            #self.gs.restart_button.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
-            #self.gs.winner_label.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
+            self.start_timer()
+
+    def next_turn(self):
+        """Move to the next player's turn."""
+
+        if self.gs.current_question_index < len(self.gs.selected_questions):
+            if self.current_player == 1:
+                self.current_player = 2
+            else:
+                self.current_player = 1
+
+            self.gs.result_label.configure(text="")  # Clear previous result
+            self.gs.options_var.set(None)  # Reset selected option
+            self.start_timer()  # Start timer for the next player
+        else:
+            self.gs.turn_label.configure(text="")  # Clear turn label
+
+    def time_up(self):
+        #self.gs.result_label.configure(text="Time's up!", text_color="red")
+        self.next_turn()  # Move to the next player's turn
 
     def check_answer(self):
         """Check the selected answer."""
+
+        #if self.timer_running:
+        self.gs.stop_timer()  # Stop the timer and sound
+        #self.timer_running = False
+
         selected_option = self.gs.options_var.get()
         _, question_data = self.gs.selected_questions[self.gs.current_question_index]
         correct_answer = question_data[7]
 
+        # Check if the answer is given within the time limit
+        if selected_option is None:
+            self.gs.result_label.configure(text="Time's up!", text_color="red")
+            self.next_turn()  # Move to the next player's turn
+            return
+
         for button in self.gs.option_buttons:
             button.configure(text_color="black")
 
-        if int(selected_option) == correct_answer:
+        if int(selected_option) == self.gs.index_mapping[correct_answer]:
             self.gs.result_label.configure(text="Correct!", text_color="blue")
+        # if int(selected_option) == correct_answer:
+        #     self.gs.result_label.configure(text="Correct!", text_color="blue")
             self.gs.score_player1 += 10
             self.gs.score_player1_label.configure(text=f"Score: {self.gs.score_player1}")
-            self.gs.option_buttons[int(correct_answer) - 1].configure(text_color="blue")
+            self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
         else:
             self.gs.result_label.configure(text="Incorrect!", text_color="red")
-            self.gs.option_buttons[int(correct_answer) - 1].configure(text_color="blue")
+            self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
             if selected_option:
                 self.gs.option_buttons[int(selected_option) - 1].configure(text_color="red")
 
@@ -73,10 +114,15 @@ class Logic():
 
     def next_question(self):
         """Move to the next question."""
-        self.gs.current_question_index += 1
-        self.gs.submit_button.configure(state="normal")
-        self.gs.next_button.pack_forget()
-        self.display_question()
+
+        if self.gs.current_question_index < len(self.gs.selected_questions):
+            self.gs.current_question_index += 1
+            self.gs.submit_button.configure(state="normal")
+            self.display_question()
+            self.start_timer()  # Start the timer for the current player
+        else:
+            self.determine_quiz_winner()
+
 
     def restart_quiz(self):
         """Restart the quiz."""
