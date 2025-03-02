@@ -9,7 +9,7 @@ from utils import CustomPopup, Utils
 
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
-LIMIT_TIME = 5
+LIMIT_TIME = 10
 
 class RootUtils:
     @staticmethod
@@ -479,6 +479,7 @@ class GameScreen:
         #self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
 
         self.logic.display_question()
+        self.logic.start_timer() # start the timer
 
 
     def run(self):
@@ -490,28 +491,62 @@ class GameScreen:
     def get_current_player_name(self):
         return self.player1 if self.logic.current_player == 1 else self.player2
 
+    # def countdown(self, count):
+    #     if not self.logic.timer_running:  # If timer stopped, stop the countdown
+    #         return
+    #
+    #     self.timer.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+    #     self.timer.configure(text=str(count), text_color="red")
+    #
+    #     if count > 0:
+    #         self.root.after(1000, self.countdown, count - 1)
+    #
+    #         if count == self.logic.time_limit:
+    #             pygame.mixer.music.load("tic-tac.mp3")
+    #             pygame.mixer.music.play(loops=-1, fade_ms=500)
+    #     else:
+    #         self.timer.configure(text="Time's up!")
+    #         pygame.mixer.music.stop()
+    #         pygame.mixer.music.load("buzz.mp3")
+    #         pygame.mixer.music.play(loops=-1, fade_ms=500)
+    #         self.logic.time_up()
+
     def countdown(self, count):
+        pygame.mixer.stop()
 
-        self.timer.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
-        self.timer.configure(text=str(count), text_color="red")
+        # Check if the timer should be active
+        if not self.logic.timer_active:
+            return  # Exit the method if the timer is not active
 
-        if count > 0:
-            self.root.after(1000, self.countdown, count - 1)
+        # Stop any existing sounds and destroy the timer widget
+        try:
+            if self.tic_tac_sound and self.buzz_sound:
+                self.tic_tac_sound.stop()
+                self.buzz_sound.stop()
+                self.timer.destroy()
+        except:
+            self.tic_tac_sound = pygame.mixer.Sound("tic-tac.mp3")
+            self.buzz_sound = pygame.mixer.Sound("buzz.mp3")
 
-            if count == self.logic.time_limit:
-                pygame.mixer.music.load("tic-tac.mp3")
-                pygame.mixer.music.play(loops=-1, fade_ms=500)
+        # Create the timer label (only if necessary)
+        self.timer = ctk.CTkLabel(self.frame_center_bottom, text="", font=("Helvetica", 28), text_color="black")
+        self.timer.grid(row=1, column=1, padx=20, pady=20)  # Use Grid to position the widget
+        self.tic_tac_sound.play(-1)
 
-        else:
-            self.timer.configure(text="Time's up!")
-            pygame.mixer.music.stop()
-            pygame.mixer.music.load("buzz.mp3")
-            pygame.mixer.music.play(loops=-1, fade_ms=500)
-            self.logic.time_up()  # Call time_up method in Logic
+        def update_countdown(remaining):
+            if remaining > 0:
+                self.timer.configure(text=str(remaining))
+                self.timer.after(1000, update_countdown, remaining - 1)
+            else:
+                self.tic_tac_sound.stop()
+                if self.logic.timer_active:
+                    self.buzz_sound.play()
+                    self.timer.configure(text="Time's up!", text_color="red")
+                    self.timer.after(3000, self.buzz_sound.stop)
+                    self.next_button.configure(state="normal")
+                    self.submit_button.configure(state="disabled")
 
-    def stop_timer(self):
-        self.timer.grid_forget()  # Hide the timer
-        pygame.mixer.music.stop()  # Stop the sound
+        update_countdown(count)
 
     def exit(self):
         quit()

@@ -6,21 +6,25 @@ It provides the following functionality:
 3. Determine quiz winner: Determines the winner of the quiz based on the scores of the players.
 """
 from utils import Utils
+import gui
 
 class Logic():
     def __init__(self, gs):
         self.gs = gs
         self.current_player = 1  # 1 for Player 1, 2 for Player 2
-        self.time_limit = 15  # 15 seconds for each player to answer
-        self.timer_running = False  # To track if the timer is running
+        self.time_limit = gui.LIMIT_TIME
+        self.timer_active = False    # To track if the timer is running
         self.underline_current_player()
 
     def start_timer(self):
-        self.timer_running = True
+        self.timer_active = True
         self.gs.countdown(self.time_limit)
 
+    def stop_timer(self):
+        self.timer_active = False
+
     def display_question(self):
-        # Display the next question when there are more questions available
+        self.gs.countdown(self.time_limit)  # Inicia o timer corretamente
 
         # Disable the next button and submit button
         self.gs.next_button.configure(state="disabled")
@@ -65,7 +69,6 @@ class Logic():
             self.gs.result_label.configure(text="")
             self.gs.result_label.grid_forget()
             self.gs.next_button.forget()
-            self.gs.stop_timer()
 
         # Update the turn label
         for i, button in enumerate(self.gs.option_buttons):
@@ -90,22 +93,25 @@ class Logic():
             self.gs.turn_label.configure(text="")  # Clear turn label
 
 
-    def time_up(self):
-        #self.gs.result_label.configure(text="Time's up!", text_color="red")
-        self.next_turn()  # Move to the next player's turn
-
     def check_answer(self):
         """Check the selected answer."""
 
-        self.gs.stop_timer()  # Stop the timer and sound
+        # Stop the timer and sounds
+        self.stop_timer()
+        self.gs.tic_tac_sound.stop()
+        self.gs.buzz_sound.stop()
 
+        # Ensure the timer label is not displayed
+        if hasattr(self.gs, "timer") and self.gs.timer:
+            self.gs.timer.grid_forget()
+
+        # Get the selected option
         selected_option = self.gs.options_var.get()
         _, question_data = self.gs.selected_questions[self.gs.current_question_index]
         correct_answer = question_data[7]
 
         # Check if the answer is given within the time limit
         if selected_option is None or selected_option == 'None':
-            self.gs.result_label.configure(text="Time's up!", text_color="red")
             self.next_turn()  # Move to the next player's turn
             return
 
@@ -142,6 +148,11 @@ class Logic():
         # Enable the next button and disable the submit button
         self.gs.submit_button.configure(state="disabled")
         self.gs.next_button.configure(state="normal")
+
+        # Verifique se o timer está ativo antes de tocar o som "buzz.mp3"
+        if self.timer_active:
+            self.gs.submit_button.configure(state="disabled")
+            self.gs.next_button.configure(state="normal")
 
     def next_question(self):
         """Move to the next question."""
@@ -190,30 +201,34 @@ class Logic():
     #     self.display_question()
 
     def determine_quiz_winner(self):
+        self.stop_timer()
+        self.gs.tic_tac_sound.stop()
+        self.gs.buzz_sound.stop()
+        self.gs.timer.grid_forget()
+
         if self.gs.score_player1 > self.gs.score_player2:
             self.gs.winner_label.configure(text=f"{self.gs.player1} ({self.gs.age1}) is the winner!", text_color="green")
             self.gs.winner_label.grid(padx=20, pady=(20, 0), sticky="nsew")
             print(f"{self.gs.player1_label} is the winner!")
             self.gs.next_button.grid_forget()
-            self.gs.stop_timer()
+
         elif self.gs.score_player1 < self.gs.score_player2:
             self.gs.winner_label.configure(text=f"{self.gs.player2} ({self.gs.age2}) is the winner!", text_color="blue")
             self.gs.winner_label.grid(padx=20, pady=(20, 0), sticky="nsew")
             print("Player 2 is the winner!")
             self.gs.next_button.grid_forget()
-            self.gs.stop_timer()
+
         else:
             self.gs.winner_label.configure(text="It's a tie! Both players are winners!", text_color="green")
             self.gs.winner_label.grid(padx=20, pady=(20, 0), sticky="nsew")
             print("It's a tie! Both players are winners!")
             self.gs.next_button.grid_forget()
-            self.gs.stop_timer()
 
     def underline_current_player(self):
         if self.current_player == 1:
-            self.gs.player1_label.configure(font=("Arial", 14, "underline", "bold"))
-            self.gs.player2_label.configure(font=("Arial", 14))
+            self.gs.player1_label.configure(font=("Arial", 14, "bold"), fg_color="white", padx=7, pady=7)
+            self.gs.player2_label.configure(font=("Arial", 14), fg_color="gray80")
         else:
-            self.gs.player2_label.configure(font=("Arial", 14, "underline", "bold"))
-            self.gs.player1_label.configure(font=("Arial", 14))
+            self.gs.player2_label.configure(font=("Arial", 14, "bold"), fg_color="white", padx=7, pady=7)
+            self.gs.player1_label.configure(font=("Arial", 14), fg_color="gray80")
 
