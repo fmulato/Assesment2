@@ -308,7 +308,7 @@ class AddNameDialog(ctk.CTkToplevel):
         self.year_menu.grid(row=2, column=3, sticky="nsew")
 
         self.submit_button = ctk.CTkButton(self, text="OK", command=self.apply)
-        self.submit_button.grid(row=3, column=1, sticky="nsew", pady=(10, 0))
+        self.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
     def save_birthday(self):
         birthday_entry = f"{self.selected_year.get()}-{self.months.index(self.selected_month.get()) + 1:02}-{self.selected_day.get()}"
@@ -435,7 +435,7 @@ class GameScreen:
         # Results
         self.winner_label = ctk.CTkLabel(self.frame_center_middle, text="Winner:", font=font_categ, text_color='green')
         self.result_label = ctk.CTkLabel(self.frame_center_middle, text="", font=("Arial", 16), text_color="black")
-        self.result_label.grid(pady=10)
+        self.result_label.grid(pady=10, padx=10, sticky="nsew", row=5, column=0)
 
         # Load questions
         # self.logic.save_player_info()
@@ -475,14 +475,17 @@ class GameScreen:
         self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next", command=self.logic.next_question, font=("Arial", 14), width=100)
         self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
-        self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz", command=self.logic.restart_quiz, font=("Arial", 14), width=100)
-        self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
+        self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz", command=self.back_to_start_screen, font=("Arial", 14), width=100)
+        #self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
 
         self.logic.display_question()
 
 
     def run(self):
         self.root.mainloop()
+
+    def enable_submit_button(self, index):
+        self.submit_button.configure(state="normal")
 
     def get_current_player_name(self):
         return self.player1 if self.logic.current_player == 1 else self.player2
@@ -520,6 +523,8 @@ class GameScreen:
         """ Back to the start screen to select new players. """
         self.root.withdraw()
         StartScreen()
+
+
 
 if __name__ == "__main__":
     StartScreen()

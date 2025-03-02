@@ -8,11 +8,11 @@ from typing import Sequence, List, Tuple
 import customtkinter as ctk
 from datetime import datetime
 
-NUMBER_QUESTION = 3
+NUMBER_QUESTION = 2
 
 class Utils:
 
-    def select_random_elements(self, elements, n=NUMBER_QUESTION) -> List[Tuple[int, any]]:
+    def select_random_elements(self, elements, n=NUMBER_QUESTION*2) -> List[Tuple[int, any]]:
 
         if not isinstance(elements, (list, tuple, set)):
             raise ValueError("The 'elements' argument must be a list, tuple, or set.")
