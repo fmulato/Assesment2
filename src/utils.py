@@ -1,7 +1,7 @@
 """
 This module contains utility functions to load questions into the database from a JSON file.
 Verifies if a question already exists in the database. If it does, it skips the insertion.
-"""""
+"""
 
 import random
 from typing import Sequence, List, Tuple

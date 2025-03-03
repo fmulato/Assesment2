@@ -4,9 +4,16 @@ It provides the following functionality:
 1. Display question: Displays the current question and options on the screen.
 2. Display result: Displays the result of the current question (correct or incorrect).
 3. Determine quiz winner: Determines the winner of the quiz based on the scores of the players.
+4. Next turn: Moves to the next player's turn.
+5. Check answer: Checks the selected answer and updates the score accordingly.
+6. Start timer: Starts the countdown timer for each question.
+7. Stop timer: Stops the countdown timer.
+8. Next question: Moves to the next question in the quiz.
+9. Underline current player: Highlights the current player in the GUI.
 """
 from utils import Utils
 import gui
+import pygame
 
 class Logic():
     def __init__(self, gs):
@@ -24,7 +31,10 @@ class Logic():
         self.timer_active = False
 
     def display_question(self):
-        self.gs.countdown(self.time_limit)  # Inicia o timer corretamente
+
+        # Check if there are more questions available to display
+        if self.gs.current_question_index < len(self.gs.selected_questions):
+            self.gs.countdown(self.time_limit)  # Start the timer
 
         # Disable the next button and submit button
         self.gs.next_button.configure(state="disabled")
@@ -61,6 +71,12 @@ class Logic():
         else: # No more questions available
             self.gs.question_label.configure(text="No more questions!")
             self.gs.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
+
+            # Stop the timer and sounds
+            self.stop_timer()
+            self.gs.tic_tac_sound.stop()
+            self.gs.buzz_sound.stop()
+
             self.determine_quiz_winner()
 
             for button in self.gs.option_buttons:
@@ -85,7 +101,12 @@ class Logic():
 
             self.gs.result_label.configure(text="")  # Clear previous result
             self.gs.options_var.set(None)  # Reset selected option
-            self.start_timer()  # Start timer for the next player
+            if self.last_question == False:
+                self.start_timer() # Start timer for the next player
+            if self.last_question == True:
+                self.stop_timer()
+                self.gs.tic_tac_sound.stop()
+                self.gs.buzz_sound.stop()
 
             self.underline_current_player()
 
@@ -149,62 +170,40 @@ class Logic():
         self.gs.submit_button.configure(state="disabled")
         self.gs.next_button.configure(state="normal")
 
-        # Verifique se o timer está ativo antes de tocar o som "buzz.mp3"
+        # check if the timer is active before playing the sound
         if self.timer_active:
             self.gs.submit_button.configure(state="disabled")
             self.gs.next_button.configure(state="normal")
 
     def next_question(self):
         """Move to the next question."""
-
+        # check if there are more questions available to display
+        self.last_question = False
         if self.gs.current_question_index < len(self.gs.selected_questions):
             self.gs.current_question_index += 1
             self.gs.submit_button.configure(state="normal")
             self.gs.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
             self.display_question()
-            self.start_timer()  # Start the timer for the current player
+            self.next_turn()
         else:
+            self.last_question = True
+            self.stop_timer()
+            self.gs.tic_tac_sound.stop()
+            self.gs.buzz_sound.stop()
+            self.gs.timer.grid_forget()
             self.determine_quiz_winner()
+            self.next_turn()
 
-        self.next_turn()
-
-    # def restart_quiz(self):
-    #     """Restart the quiz."""
-    #     # Reset scores
-    #     self.gs.score_player1 = 0
-    #     self.gs.score_player1_label.configure(text=f"Score: {self.gs.score_player1}")
-    #
-    #     self.gs.score_player2 = 0  # Reset Player 2 score
-    #     self.gs.score_player2_label.configure(text=f"Score: {self.gs.score_player2}")
-    #
-    #     # Reset question index and selected questions
-    #     self.gs.current_question_index = 0
-    #     self.gs.selected_questions = Utils().select_random_elements(self.gs.questions)
-    #
-    #     # Hide the restart button and show the next button
-    #     self.gs.restart_button.grid_forget()
-    #     self.gs.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
-    #
-    #     # Reset option buttons
-    #     for i, button in enumerate(self.gs.option_buttons):
-    #         button.grid(row=3 + i, column=0, padx=10, pady=10, sticky="ew")
-    #         button.configure(text="", text_color="black")  # Reset button text and color
-    #
-    #     # Reset the submit button
-    #     self.gs.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
-    #     self.gs.submit_button.configure(state="normal")  # Enable the submit button
-    #
-    #     # Clear the result label
-    #     self.gs.result_label.configure(text="")
-    #
-    #     # Display the first question
-    #     self.display_question()
 
     def determine_quiz_winner(self):
         self.stop_timer()
-        self.gs.tic_tac_sound.stop()
-        self.gs.buzz_sound.stop()
         self.gs.timer.grid_forget()
+
+        # Play the winner sound
+        if not hasattr(self, 'winner_sound_played'):
+            self.tic_tac_sound = pygame.mixer.Sound("winner.wav")
+            self.tic_tac_sound.play()
+            self.winner_sound_played = True  # set the flag to True
 
         if self.gs.score_player1 > self.gs.score_player2:
             self.gs.winner_label.configure(text=f"{self.gs.player1} ({self.gs.age1}) is the winner!", text_color="green")

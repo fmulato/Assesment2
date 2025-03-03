@@ -1,15 +1,20 @@
+"""
+This module contains the main GUI classes for the Brain Up! quiz game.
+The StartScreen class is the first window where players are selected.
+The GameScreen class is where the game is played.
+"""
+
 import customtkinter as ctk
 import pygame
 import datetime
 import quiz_logic as ql
 
-#import database_management.py
 from database_management import DataBase
 from utils import CustomPopup, Utils
 
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
-LIMIT_TIME = 10
+LIMIT_TIME = 6
 
 class RootUtils:
     @staticmethod
@@ -443,12 +448,9 @@ class GameScreen:
         self.selected_questions = Utils().select_random_elements(self.questions)
         self.current_question_index = 0
 
-
         self.frame_center_bottom.grid_columnconfigure(0, weight=1)
         self.frame_center_bottom.grid_columnconfigure(1, weight=1)
         self.frame_center_bottom.grid_columnconfigure(2, weight=1)
-
-
 
         self.exit_button = ctk.CTkButton(self.frame_center_bottom, text="Exit",
                                             command=self.exit, font=("Arial", 14), width=100)
@@ -476,11 +478,9 @@ class GameScreen:
         self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
         self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz", command=self.back_to_start_screen, font=("Arial", 14), width=100)
-        #self.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
 
         self.logic.display_question()
         self.logic.start_timer() # start the timer
-
 
     def run(self):
         self.root.mainloop()
@@ -490,26 +490,6 @@ class GameScreen:
 
     def get_current_player_name(self):
         return self.player1 if self.logic.current_player == 1 else self.player2
-
-    # def countdown(self, count):
-    #     if not self.logic.timer_running:  # If timer stopped, stop the countdown
-    #         return
-    #
-    #     self.timer.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
-    #     self.timer.configure(text=str(count), text_color="red")
-    #
-    #     if count > 0:
-    #         self.root.after(1000, self.countdown, count - 1)
-    #
-    #         if count == self.logic.time_limit:
-    #             pygame.mixer.music.load("tic-tac.mp3")
-    #             pygame.mixer.music.play(loops=-1, fade_ms=500)
-    #     else:
-    #         self.timer.configure(text="Time's up!")
-    #         pygame.mixer.music.stop()
-    #         pygame.mixer.music.load("buzz.mp3")
-    #         pygame.mixer.music.play(loops=-1, fade_ms=500)
-    #         self.logic.time_up()
 
     def countdown(self, count):
         pygame.mixer.stop()
@@ -525,7 +505,7 @@ class GameScreen:
                 self.buzz_sound.stop()
                 self.timer.destroy()
         except:
-            self.tic_tac_sound = pygame.mixer.Sound("tic-tac.mp3")
+            self.tic_tac_sound = pygame.mixer.Sound("tic-tac.wav")
             self.buzz_sound = pygame.mixer.Sound("buzz.mp3")
 
         # Create the timer label (only if necessary)

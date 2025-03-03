@@ -1,5 +1,6 @@
 """
-this is the main file
+This is the main file. It is responsible for starting the application by calling the StartScreen class from the gui module.
+The database is loaded from a JSON file and the questions are inserted into the database.
 """
 import gui
 from database_management import DataBase
