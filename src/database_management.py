@@ -165,6 +165,15 @@ class DataBase:
 
         return questions
 
+    def get_ranking(self):
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
 
+        cursor.execute(sql_st.SELECT_RANKING)
+        ranking = cursor.fetchall()
+
+        connection.close()
+
+        return ranking
 
 

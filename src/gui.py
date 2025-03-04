@@ -34,24 +34,11 @@ class StartScreen:
         # Add user management instance
         self.db_manager = DataBase()
 
-
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
 
         # Selected players list (Max 2 people)
         self.selected_players = []
-
-
-        # Add New Name button
-        self.add_name_button = ctk.CTkButton(self.root, text="Add New Name", command=self.add_new_name)
-        self.add_name_button.grid(row=4, column=0, columnspan=4, pady=10)
-
-
-        # Add update_questions button
-        self.update_questions_button = ctk.CTkButton(self.root, text="Update Questions", command=self.update_questions)
-        self.update_questions_button.grid(row=5, column=0, columnspan=4, pady=10)  # Place below "Add New Name"
-
-
 
         # Force the main window to appear centered on the screen
         RootUtils.center_window(self.root, SIZE_WIDTH, SIZE_HEIGHT)
@@ -70,8 +57,6 @@ class StartScreen:
         label_frame = ctk.CTkFrame(self.root, fg_color="transparent")
         label_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         label_frame.grid_columnconfigure(0, weight=1)
-
-        # Instructions
 
         # Configure columns to have equal weight for balanced spacing
         label_frame.columnconfigure(0, weight=1)  # Column for Player 1
@@ -99,8 +84,6 @@ class StartScreen:
         self.label_player2.grid(row=1, column=2, pady=5, sticky="ew")
         self.label_player2_name = ctk.CTkLabel(label_frame, text="", font=font_instruction, text_color='blue')  # Label para o nome do jogador 2
         self.label_player2_name.grid(row=2, column=2, pady=5, sticky="ew")
-        #self.label_player2_age = ctk.CTkLabel(label_frame, text=self.age2, font=font_instruction, text_color='blue')
-        #self.label_player2_age.grid(row=2, column=3, pady=5, sticky="ew")
 
         # Frame for player buttons
         self.button_frame = ctk.CTkFrame(self.root, fg_color="transparent")
@@ -114,6 +97,34 @@ class StartScreen:
         self.start_button = ctk.CTkButton(self.root, text="Start Game", command=self.start_game, font=("Arial", 14),
                                           width=100, state="normal")
         self.start_button.grid(row=2, column=0, pady=10)
+
+        self.lower_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        self.lower_frame.grid(row=5, column=0, pady=10, sticky="ew")
+        self.lower_frame.grid_columnconfigure((0, 1, 2), weight=1)  # Equal spacing for 3 columns
+
+        # Add delete_name_button
+        self.delete_name_button = ctk.CTkButton(self.lower_frame, text="Delete Player", command=self.update_questions, font=("Arial", 14), width=100, state="normal")
+        self.delete_name_button.grid(row=4, column=0, padx=10, pady=10)
+
+        # Add New Name button
+        self.add_name_button = ctk.CTkButton(self.lower_frame, text="Add New Name", command=self.add_new_name, font=("Arial", 14), width=100, state="normal")
+        self.add_name_button.grid(row=4, column=1, padx=10, pady=10)
+
+        # Add update_questions button
+        self.update_questions_button = ctk.CTkButton(self.lower_frame, text="Update Questions", command=self.update_questions, font=("Arial", 14), width=100, state="normal")
+        self.update_questions_button.grid(row=4, column=2, padx=10, pady=10)
+
+        # Add show_rules_button
+        self.show_rules_button = ctk.CTkButton(self.lower_frame, text="Show Rules", command=self.show_rules, font=("Arial", 14), width=100, state="normal")
+        self.show_rules_button.grid(row=5, column=0, padx=10, pady=10)
+
+        # Add setup_button
+        self.setup_button = ctk.CTkButton(self.lower_frame, text="Setup", command=self.open_setup, font=("Arial", 14), width=100, state="normal")
+        self.setup_button.grid(row=5, column=1, padx=10, pady=10)
+
+        # Add ranking_button
+        self.ranking_button = ctk.CTkButton(self.lower_frame, text="Show Ranking", command=self.show_ranking, font=("Arial", 14), width=100, state="normal")
+        self.ranking_button.grid(row=5, column=2, padx=10, pady=10)
 
         self.root.mainloop()
 
@@ -186,8 +197,6 @@ class StartScreen:
         else:
             self.label_player1_name.configure(text="")
             self.label_player2_name.configure(text="")
-            #self.label_player1_age.configure(text="")
-            #self.label_player2_age.configure(text="")
 
     def update_button_colors(self):
         """Update the colors of the player buttons based on selection.
@@ -229,9 +238,17 @@ class StartScreen:
     def add_new_name(self):
         AddNameDialog(self.root, self.db_manager, self)
 
-    def update_buttons(self):
-        pass
+    def show_ranking(self):
+        """ Open the Show Ranking dialog. """
+        ShowRankingDialog(self.root, self.db_manager)
 
+    def show_rules(self):
+        """ Open the Show Rules dialog. """
+        ShowRulesDialog(self.root)
+
+    def open_setup(self):
+        """ Open the Setup dialog. """
+        SetupDialog(self.root)
 
     def start_game(self):
         """ Start the game with selected players. """
@@ -266,7 +283,7 @@ class AddNameDialog(ctk.CTkToplevel):
     def __init__(self, parent, db_manager, start_screen):
         super().__init__(parent)  # Using parent (self.root) for CTkToplevel
         self.db_manager = db_manager
-        self.start_screen = start_screen  # Referece to instance
+        self.start_screen = start_screen  # Reference to instance
         self.parent = parent
         self.result = None
 
@@ -278,42 +295,45 @@ class AddNameDialog(ctk.CTkToplevel):
 
         self.grab_set()  # Make the window modal (force user interaction)
 
-        ctk.CTkLabel(self, text="Name:").grid(row=0, column=0, sticky="nsew")
-        self.name_entry = ctk.CTkEntry(self)
-        self.name_entry.grid(row=0, column=1, sticky="nsew")
+        # Configure grid for proper alignment
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=3)  # Column for entry fields
+        self.grid_rowconfigure((0, 1, 2), weight=1)
 
-        self.birthday_entry = ctk.CTkEntry(self)
+        # Label and Entry for Name
+        ctk.CTkLabel(self, text="Name:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.name_entry = ctk.CTkEntry(self, width=150)  # Fixed width for better control
+        self.name_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
-        # Label to birthday
-        ctk.CTkLabel(self, text="Select your Birthday:").grid(row=1, column=1, sticky="nsew")
+        # Label for Birthday
+        ctk.CTkLabel(self, text="Select your Birthday:").grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="w")
 
-        # combo box for day
+        # Combo box for Day
         self.days = [str(i).zfill(2) for i in range(1, 32)]  # 01, 02, ..., 31
-        self.selected_day = ctk.StringVar(value=self.days[0])  # default to 01
-        self.day_menu = ctk.CTkOptionMenu(self, variable=self.selected_day, values=self.days)
-        self.day_menu.configure(width=18)
-        self.day_menu.grid(row=2, column=0, sticky="nsew", padx=(10, 0))
+        self.selected_day = ctk.StringVar(value=self.days[0])  # Default to 01
+        self.day_menu = ctk.CTkOptionMenu(self, variable=self.selected_day, values=self.days, width=60)
+        self.day_menu.grid(row=2, column=0, padx=(10, 0), pady=5, sticky="w")
 
-        # combo box for month
+        # Combo box for Month
         self.months = [
-                        "January", "February", "March", "April", "May", "June",
-                        "July", "August", "September", "October", "November", "December"
-                      ]
-        self.selected_month = ctk.StringVar(value=self.months[0])  # deafult to January
-        self.month_menu = ctk.CTkOptionMenu(self, variable=self.selected_month, values=self.months)
-        self.month_menu.configure(width=35)
-        self.month_menu.grid(row=2, column=1, sticky="nsew")
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ]
+        self.selected_month = ctk.StringVar(value=self.months[0])  # Default to January
+        self.month_menu = ctk.CTkOptionMenu(self, variable=self.selected_month, values=self.months, width=100)
+        self.month_menu.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
-        # combo box for year
+        # Combo box for Year
         current_year = datetime.datetime.now().year
         self.years = [str(year) for year in range(current_year - 15, current_year - 8)]
         self.selected_year = ctk.StringVar(value=self.years[0])
-        self.year_menu = ctk.CTkOptionMenu(self, variable=self.selected_year, values=self.years)
-        self.year_menu.configure(width=25)
-        self.year_menu.grid(row=2, column=3, sticky="nsew")
+        self.year_menu = ctk.CTkOptionMenu(self, variable=self.selected_year, values=self.years, width=60)
+        self.year_menu.grid(row=2, column=1, padx=(110, 0), pady=5, sticky="w")
 
-        self.submit_button = ctk.CTkButton(self, text="OK", command=self.apply)
-        self.submit_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        # Submit Button
+        self.submit_button = ctk.CTkButton(self, text="OK", command=self.apply, width=100)
+        self.submit_button.grid(row=3, column=0, columnspan=2, pady=10)
+        #self.submit_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
     def save_birthday(self):
         birthday_entry = f"{self.selected_year.get()}-{self.months.index(self.selected_month.get()) + 1:02}-{self.selected_day.get()}"
@@ -331,7 +351,6 @@ class AddNameDialog(ctk.CTkToplevel):
         success = self.db_manager.register_user(name, birthday)
         if success:
             self.start_screen.display_player_buttons()
-            #self.destroy()  # Close the pop-up after success
             self.withdraw()  # Hide the pop-up after success
 
 
@@ -539,7 +558,170 @@ class GameScreen:
         self.root.withdraw()
         StartScreen()
 
+class ShowRulesDialog(ctk.CTkToplevel):
+    """ Custom pop-up window to display the game rules. """
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.title("Game Rules")
+        RootUtils.center_window(self, SIZE_WIDTH, SIZE_HEIGHT)
+        self.grab_set()
 
+        # Configure a grade principal
+        self.grid_rowconfigure(0, weight=0)  # Espaço para o título
+        self.grid_rowconfigure(1, weight=1)  # Espaço para o scroll_frame
+        self.grid_rowconfigure(2, weight=0)  # Espaço para o botão "Close"
+        self.grid_columnconfigure(0, weight=1)
+
+        # Título: Welcome to Brain Up: The Learning Adventure!
+        title_label = ctk.CTkLabel(
+            self,
+            text="Welcome to Brain Up: The Learning Adventure!",
+            font=("Arial", 20, "bold"),
+            text_color="blue"
+        )
+        title_label.grid(row=0, column=0, pady=10, sticky="ew")
+
+        # Regras do jogo
+        rules_text = (
+            "1. Select two players to start the game.\n\n"
+            "2. Add new name if needed or delete it.\n\n"
+            "3. Each player takes turns answering multiple-choice questions.\n\n"
+            "4. Questions cover subjects like Science, English, and Māori Vocabulary. More subjects can be added.\n\n"
+            "5. You have 15 seconds to answer each question as default, however it can be changed.\n\n"
+            "6. Earn 10 points for each correct answer. Using a hint reduces points by 50%.\n\n"
+            "7. Skip a question twice per game to transfer it to your opponent.\n\n"
+            "8. The final question is worth double points (20 points) or 10 points if a hint is used.\n\n"
+            "9. The player with the most scores wins.\n\n"
+            "10. Check the ranking to see who has the most scores in all games (only Top 20).\n\n"
+            "11. Have fun and challenge your brain while learning!"
+        )
+
+        # Display rules in a scrollable frame
+        self.scroll_frame = ctk.CTkScrollableFrame(self, width=SIZE_WIDTH - 40, height=SIZE_HEIGHT - 100)
+        self.scroll_frame.grid(row=1, column=0, pady=10, padx=10, sticky="nsew")
+
+        ctk.CTkLabel(
+            self.scroll_frame,
+            text=rules_text,
+            font=("Arial", 14),
+            justify="left",
+            wraplength=SIZE_WIDTH - 60
+        ).grid(row=0, column=0, pady=10, sticky="w")
+
+        # Close button
+        self.close_button = ctk.CTkButton(
+            self,
+            text="Close",
+            command=self.destroy,
+            font=("Arial", 14),
+            width=100
+        )
+        self.close_button.grid(row=2, column=0, pady=10)
+
+class ShowRankingDialog(ctk.CTkToplevel):
+    """ Custom pop-up window to display the ranking of players. """
+    def __init__(self, parent, db_manager):
+        super().__init__(parent)
+        self.db_manager = db_manager
+        self.title("Player Rankings")
+        #self.geometry("450x600")
+        RootUtils.center_window(self, SIZE_WIDTH, SIZE_HEIGHT)
+        self.grab_set()
+
+        # set the main grid configuration
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=0)
+        self.grid_columnconfigure(0, weight=1)
+
+        # Title: TOP 20
+        self.title_label = ctk.CTkLabel(self, text="TOP 20", font=("Arial", 20, "bold"), text_color="blue")
+        self.title_label.grid(row=0, column=0, pady=10, sticky="ew")
+
+        # Fetch rankings from the database
+        rankings = self.db_manager.get_ranking()
+
+        # Create a scrollable frame for rankings
+        self.scroll_frame = ctk.CTkScrollableFrame(self, width=450, height=250)
+        self.scroll_frame.grid(row=1, column=0, pady=10, padx=10, sticky="nsew")
+
+        if not rankings:
+            # show message if no rankings are available
+            ctk.CTkLabel(self.scroll_frame, text="No rankings available.", font=("Arial", 14)).grid(row=0, column=0,
+                                                                                                    pady=10,
+                                                                                                    sticky="ew")
+        else:
+            # Headers
+            headers = ["Rank", "Player", "Age", "Date", "Score"]
+            for col, header in enumerate(headers):
+                header_label = ctk.CTkLabel(self.scroll_frame, text=header, font=("Arial", 12, "bold"), anchor="w")
+                header_label.grid(row=0, column=col, padx=5, pady=5, sticky="ew")
+
+            # Rows
+            for idx, (player, age, date_score, score) in enumerate(rankings, start=1):
+                # formating date
+                date_object = datetime.datetime.strptime(date_score, "%Y-%m-%d %H:%M:%S")
+                formatted_date = date_object.strftime("%d/%m/%Y %H:%M")
+
+                # Column 1: Rank
+                rank_label = ctk.CTkLabel(self.scroll_frame, text=f"{idx}.", font=("Arial", 12), anchor="w")
+                rank_label.grid(row=idx, column=0, padx=5, pady=2, sticky="w")
+
+                # Column 2: Player
+                player_label = ctk.CTkLabel(self.scroll_frame, text=player, font=("Arial", 12), anchor="w")
+                player_label.grid(row=idx, column=1, padx=5, pady=2, sticky="w")
+
+                # Column 3: Age
+                age_label = ctk.CTkLabel(self.scroll_frame, text=age, font=("Arial", 12), anchor="w")
+                age_label.grid(row=idx, column=2, padx=5, pady=2, sticky="w")
+
+                # Column 4: Date
+                date_label = ctk.CTkLabel(self.scroll_frame, text=formatted_date, font=("Arial", 12), anchor="w")
+                date_label.grid(row=idx, column=3, padx=5, pady=2, sticky="w")
+
+                # Column 5: Score
+                score_label = ctk.CTkLabel(self.scroll_frame, text=score, font=("Arial", 12), anchor="w")
+                score_label.grid(row=idx, column=4, padx=5, pady=2, sticky="w")
+
+            # Fit columns to the content
+            for col in range(len(headers)):
+                self.scroll_frame.grid_columnconfigure(col, weight=1)
+
+        # Close button
+        self.close_button = ctk.CTkButton(self, text="Close", command=self.destroy, font=("Arial", 14), width=100)
+        self.close_button.grid(row=2, column=0, pady=10)
+
+class SetupDialog(ctk.CTkToplevel):
+    """ Custom pop-up window for setup options. """
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.title("Game Setup")
+        self.geometry("400x300")
+        RootUtils.center_window(self, 400, 300)
+        self.grab_set()
+
+        # Setup options
+        ctk.CTkLabel(self, text="Game Settings:", font=("Arial", 16, "bold")).pack(pady=10)
+
+        # Example setting: Time limit per question
+        self.time_limit_label = ctk.CTkLabel(self, text="Time Limit per Question (seconds):", font=("Arial", 14))
+        self.time_limit_label.pack(pady=5)
+
+        self.time_limit_entry = ctk.CTkEntry(self, width=100)
+        self.time_limit_entry.insert(0, "10")  # Default value
+        self.time_limit_entry.pack(pady=5)
+
+        # Save button
+        self.save_button = ctk.CTkButton(self, text="Save", command=self.save_settings, font=("Arial", 14), width=100)
+        self.save_button.pack(pady=10)
+
+        # Close button
+        self.close_button = ctk.CTkButton(self, text="Close", command=self.destroy, font=("Arial", 14), width=100)
+        self.close_button.pack(pady=10)
+
+    def save_settings(self):
+        """ Save the settings and update the global LIMIT_TIME. """
+        pass
 
 if __name__ == "__main__":
     StartScreen()

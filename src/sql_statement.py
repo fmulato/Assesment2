@@ -84,3 +84,10 @@ SELECT_ALL_PLAYERS_WITH_AGE = """
                 FROM 
                    players
                 """
+SELECT_RANKING = """
+                SELECT p.username, s.age, s.date_time, s.current_score
+                FROM players p
+                JOIN scores s ON p.id_player = s.id_player
+                ORDER BY s.current_score DESC
+                LIMIT 20
+                """
