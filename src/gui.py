@@ -10,11 +10,7 @@ import datetime
 import quiz_logic as ql
 
 from database_management import DataBase
-from utils import CustomPopup, Utils
-
-SIZE_WIDTH = 800
-SIZE_HEIGHT = 600
-LIMIT_TIME = 6
+from utils import CustomPopup, Utils, SIZE_WIDTH, SIZE_HEIGHT, LIMIT_TIME
 
 class RootUtils:
     @staticmethod
@@ -722,6 +718,34 @@ class SetupDialog(ctk.CTkToplevel):
     def save_settings(self):
         """ Save the settings and update the global LIMIT_TIME. """
         pass
+
+
+# gui.py
+class LastQuestionDialog(ctk.CTkToplevel):
+    """ Custom pop-up window to inform that it's the last question. """
+
+    def __init__(self, parent, player1, player2, current_player):
+        super().__init__(parent)
+        self.title("Bonus Question")
+        RootUtils.center_window(self, 300, 180)  # size of window
+        self.grab_set()  # turn on grab set
+
+        # find the player of the round
+        player_of_the_round = player2 if current_player == 1 else player1
+
+        # Message
+        message_label = ctk.CTkLabel(self, text=f"{player_of_the_round}, this is your last question!\n\n"
+                                                "Bonus question!\n\n"
+                                                "20 points if correct\n"
+                                                "-10 points if wrong", font=("Arial", 13))
+        message_label.pack(pady=20)
+
+        # OK Button
+        ok_button = ctk.CTkButton(self, text="OK", command=self.destroy)
+        ok_button.pack(pady=10)
+
+        # Wait for the window to close
+        self.wait_window(self)
 
 if __name__ == "__main__":
     StartScreen()

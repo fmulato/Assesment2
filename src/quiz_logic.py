@@ -11,9 +11,12 @@ It provides the following functionality:
 8. Next question: Moves to the next question in the quiz.
 9. Underline current player: Highlights the current player in the GUI.
 """
+import time
+import pygame
 from utils import Utils
 import gui
-import pygame
+
+
 
 class Logic():
     def __init__(self, gs):
@@ -31,7 +34,6 @@ class Logic():
         self.timer_active = False
 
     def display_question(self):
-
         # Check if there are more questions available to display
         if self.gs.current_question_index < len(self.gs.selected_questions):
             self.gs.countdown(self.time_limit)  # Start the timer
@@ -42,13 +44,19 @@ class Logic():
 
         if self.gs.current_question_index < len(self.gs.selected_questions):
             self.gs.question_number, self.gs.question_data = self.gs.selected_questions[self.gs.current_question_index]
-            self.gs.category_label.configure(text=f"Category: {self.gs.question_data[1]}")
+            is_last_round = self.is_last_round()  # Check if it's the last round
+
+            # Update category label with warning if it's the last question
+            if is_last_round:
+                self.gs.category_label.configure(text=f"Category: {self.gs.question_data[1]} (Last Question!)")
+                self.play_last_question_sound()  # Play sound for last question
+            else:
+                self.gs.category_label.configure(text=f"Category: {self.gs.question_data[1]}")
+
             self.gs.question_label.configure(text=f"{self.gs.current_question_index + 1}. {self.gs.question_data[2]}")
 
             # Extract options and shuffle them
-            # Options 1-4
             options = self.gs.question_data[3:7]
-            # Correct answer index
             correct_answer = self.gs.question_data[7]
 
             # Shuffle answers using Utils
@@ -60,7 +68,7 @@ class Logic():
                 self.gs.option_buttons[i].configure(text=option, text_color="black")
                 self.gs.option_buttons[i]._value = str(i + 1)
 
-            #  Update the correct answer index in question data
+            # Update the correct answer index in question data
             self.gs.question_data = list(self.gs.question_data)  # Convert tuple to list
             self.gs.question_data[7] = new_correct_answer  # Update correct answer position
 
@@ -68,7 +76,7 @@ class Logic():
             self.gs.result_label.configure(text="")
             self.gs.winner_label.grid_forget()
 
-        else: # No more questions available
+        else:  # No more questions available
             self.gs.question_label.configure(text="No more questions!")
             self.gs.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
 
@@ -88,7 +96,18 @@ class Logic():
 
         # Update the turn label
         for i, button in enumerate(self.gs.option_buttons):
-                button.configure(command=lambda i=i: self.gs.enable_submit_button(i))
+            button.configure(command=lambda i=i: self.gs.enable_submit_button(i))
+
+    def play_last_question_sound(self):
+        """Play sound to indicate it's the last question."""
+        self.last_question_sound = pygame.mixer.Sound("bonus.mp3")
+
+        self.last_question_sound.play()
+
+        # Show the last question dialog
+        gui.LastQuestionDialog(self.gs.root, self.gs.player1, self.gs.player2, self.current_player)
+
+        time.sleep(0.2)
 
     def next_turn(self):
         """Move to the next player's turn."""
@@ -113,10 +132,12 @@ class Logic():
         else:
             self.gs.turn_label.configure(text="")  # Clear turn label
 
+    def is_last_round(self):
+        """Check if the current question is one of the last two questions."""
+        return self.gs.current_question_index >= len(self.gs.selected_questions) - 2
 
     def check_answer(self):
         """Check the selected answer."""
-
         # Stop the timer and sounds
         self.stop_timer()
         self.gs.tic_tac_sound.stop()
@@ -147,21 +168,36 @@ class Logic():
         for button in self.gs.option_buttons:
             button.configure(text_color="black")
 
+        # Determine if it's the last round
+        is_last_round = self.is_last_round()
+
         # Check if the selected answer is correct
         if selected_option_int == self.gs.index_mapping[correct_answer]:
             self.gs.result_label.configure(text="Correct!", text_color="blue")
 
             # Update the score for the current player
+            points = 20 if is_last_round else 10  # Double points for the last question
             if self.current_player == 1:
-                self.gs.score_player1 += 10
+                self.gs.score_player1 += points
                 self.gs.score_player1_label.configure(text=f"Score: {self.gs.score_player1}")
             else:
-                self.gs.score_player2 += 10
+                self.gs.score_player2 += points
                 self.gs.score_player2_label.configure(text=f"Score: {self.gs.score_player2}")
 
             self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
         else:
             self.gs.result_label.configure(text="Incorrect!", text_color="red")
+            # Deduct points for wrong answer only if was last question
+            penalty = -10 if is_last_round else 0
+            if self.current_player == 1:
+                if self.gs.score_player1 > 0: # only deduct if player 1 has points
+                    self.gs.score_player1 += penalty  # Deduct 10 points for wrong answer
+                    self.gs.score_player1_label.configure(text=f"Score: {self.gs.score_player1}")
+            else:
+                if self.gs.score_player2 > 0:  # only deduct if player 2 has points
+                    self.gs.score_player2 += penalty  # Deduct 10 points for wrong answer
+                    self.gs.score_player2_label.configure(text=f"Score: {self.gs.score_player2}")
+
             self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
             if selected_option:
                 self.gs.option_buttons[selected_option_int - 1].configure(text_color="red")

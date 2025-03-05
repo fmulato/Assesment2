@@ -129,7 +129,7 @@ class DataBase:
 
             # before insert check if question already exists
             if self.check_if_question_exists(question):
-                print(f"Question '{question}' already exists in the database.")
+                #print(f"Question '{question}' already exists in the database.")
                 continue
 
             cursor.execute(sql_st.INSERT_QUESTIONS, (category, question, options[0], options[1], options[2], options[3], correct_answer))

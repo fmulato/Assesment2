@@ -8,7 +8,10 @@ from typing import Sequence, List, Tuple
 import customtkinter as ctk
 from datetime import datetime
 
-NUMBER_QUESTION = 2
+SIZE_WIDTH = 800
+SIZE_HEIGHT = 600
+LIMIT_TIME = 10
+NUMBER_QUESTION = 3
 
 class Utils:
 
