@@ -267,3 +267,9 @@ class Logic():
             self.gs.player2_label.configure(font=("Arial", 14, "bold"), fg_color="white", padx=7, pady=7)
             self.gs.player1_label.configure(font=("Arial", 14), fg_color="gray80")
 
+    def hint(self):
+        pass
+
+    def skip(self):
+        pass
+

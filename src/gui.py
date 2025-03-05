@@ -5,6 +5,7 @@ The GameScreen class is where the game is played.
 """
 
 import customtkinter as ctk
+from CTkMessagebox import CTkMessagebox
 import pygame
 import datetime
 import quiz_logic as ql
@@ -99,7 +100,7 @@ class StartScreen:
         self.lower_frame.grid_columnconfigure((0, 1, 2), weight=1)  # Equal spacing for 3 columns
 
         # Add delete_name_button
-        self.delete_name_button = ctk.CTkButton(self.lower_frame, text="Delete Player", command=self.update_questions, font=("Arial", 14), width=100, state="normal")
+        self.delete_name_button = ctk.CTkButton(self.lower_frame, text="Delete Player", command=self.delete_player, font=("Arial", 14), width=100, state="normal")
         self.delete_name_button.grid(row=4, column=0, padx=10, pady=10)
 
         # Add New Name button
@@ -233,6 +234,23 @@ class StartScreen:
 
     def add_new_name(self):
         AddNameDialog(self.root, self.db_manager, self)
+
+    def delete_player(self):
+        msg = CTkMessagebox(title="Confirm",
+                            message="Do you want to delete this player?",
+                            icon="question",
+                            option_1="No",
+                            option_2="Yes")
+
+        response = msg.get()
+
+        if response == "Yes":
+            CTkMessagebox(message="Operation successful!", icon="check", option_1="OK")
+            print("Player deleted.")
+        elif response == "No":
+            print("Operation canceled.")
+
+
 
     def show_ranking(self):
         """ Open the Show Ranking dialog. """
@@ -467,13 +485,11 @@ class GameScreen:
         self.frame_center_bottom.grid_columnconfigure(1, weight=1)
         self.frame_center_bottom.grid_columnconfigure(2, weight=1)
 
-        self.exit_button = ctk.CTkButton(self.frame_center_bottom, text="Exit",
-                                            command=self.exit, font=("Arial", 14), width=100)
-        self.exit_button.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
+        self.exit_button = ctk.CTkButton(self.frame_center_bottom, text="Exit", command=self.exit, font=("Arial", 14), width=100)
+        self.exit_button.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
 
-        self.config_button = ctk.CTkButton(self.frame_center_bottom, text="Select New Players",
-                                         command=self.back_to_start_screen, font=("Arial", 14), width=100)
-        self.config_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+        # self.config_button = ctk.CTkButton(self.frame_center_bottom, text="Select New Players", command=self.back_to_start_screen, font=("Arial", 14), width=100)
+        # self.config_button.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
         # self.restart_button.grid_forget()
 
         # label to show the current player
@@ -493,6 +509,14 @@ class GameScreen:
         self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
         self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz", command=self.back_to_start_screen, font=("Arial", 14), width=100)
+
+        self.hint_button = ctk.CTkButton(self.frame_center_bottom, text="Hint", command=self.logic.hint, font=("Arial", 14), width=100)
+        self.hint_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+        self.hint_button.configure(state="disabled")
+
+        self.skip_button = ctk.CTkButton(self.frame_center_bottom, text="Skip", command=self.logic.skip, font=("Arial", 14), width=100)
+        self.skip_button.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
+        self.skip_button.configure(state="disabled")
 
         self.logic.display_question()
         self.logic.start_timer() # start the timer
