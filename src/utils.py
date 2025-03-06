@@ -10,8 +10,8 @@ from datetime import datetime
 
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
-LIMIT_TIME = 10
-NUMBER_QUESTION = 3
+LIMIT_TIME = 12
+NUMBER_QUESTION = 5
 
 class Utils:
 

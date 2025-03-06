@@ -6,6 +6,7 @@ The GameScreen class is where the game is played.
 
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
+import tkinter.filedialog as filedialog
 import pygame
 import datetime
 import quiz_logic as ql
@@ -108,7 +109,7 @@ class StartScreen:
         self.add_name_button.grid(row=4, column=1, padx=10, pady=10)
 
         # Add update_questions button
-        self.update_questions_button = ctk.CTkButton(self.lower_frame, text="Update Questions", command=self.update_questions, font=("Arial", 14), width=100, state="normal")
+        self.update_questions_button = ctk.CTkButton(self.lower_frame, text="Update Questions", command=self.update_new_questions, font=("Arial", 14), width=100, state="normal")
         self.update_questions_button.grid(row=4, column=2, padx=10, pady=10)
 
         # Add show_rules_button
@@ -130,6 +131,39 @@ class StartScreen:
         db = DataBase()
         db.load_db_from_json("questions.json")  # Load questions from JSON
         CustomPopup("Success", "Questions database has been updated!")
+
+    def update_new_questions(self):
+        """Open a file dialog to choose a JSON file and update the questions."""
+
+        msg = CTkMessagebox(title="Instructions",
+                      message="Choose a JSON file to load new categories and questions.",
+                      icon="info",
+                      option_1="OK")
+        response1 = msg.get()
+
+        if response1 == "OK":
+            json_file = filedialog.askopenfilename(
+                                                    title="Select file",
+                                                    filetypes=[("JSON Files", "*.json")],
+                                                    defaultextension=".json"
+                                                    )
+        else:
+            return
+
+        if json_file:
+            msg = CTkMessagebox(title="Confirm",
+                                message="Do you want to update the database with this file?",
+                                icon="question",
+                                option_1="No",
+                                option_2="Yes")
+            response = msg.get()
+
+            if response == "Yes":
+                db = DataBase()
+                db.load_db_from_json(json_file)
+                CTkMessagebox(message="The database has been updated!", icon="check", option_1="OK")
+            elif response == "No":
+                print("Operation canceled.")
 
 
     def display_player_buttons(self):
@@ -434,6 +468,9 @@ class GameScreen:
         self.frame_center.grid_rowconfigure(2, weight=1)  # Bottom frame
         self.frame_center.grid_columnconfigure(0, weight=1)
 
+        bottom_spacer = ctk.CTkFrame(self.frame_left, height=70, fg_color="transparent")
+        bottom_spacer.pack(side="bottom")
+
         # Player 1
         self.player1_label = ctk.CTkLabel(self.frame_left, text=f" Player 1:\n\n {self.player1} ({self.age1})", font=font_player, text_color='green')
         self.player1_label.pack(pady=10)
@@ -441,14 +478,33 @@ class GameScreen:
         self.score_player1_label = ctk.CTkLabel(self.frame_left, text=f" Score: {self.score_player1} ", font=font_score)
         self.score_player1_label.pack(pady=5)
 
+        hint_bal_player1 = 0
+        skips_bal_player1 = 2
+        # Hints and Skips balance
+        self.hint_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Hints left: {hint_bal_player1}", font=font_score, text_color=("green"))
+        self.hint_bal_player1_label.pack(pady=5, side="bottom")
+        self.skips_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Skips left: {skips_bal_player1}", font=font_score, text_color=("green"))
+        self.skips_bal_player1_label.pack(pady=5, side="bottom")
+
+        bottom_spacer = ctk.CTkFrame(self.frame_right, height=70, fg_color="transparent")
+        bottom_spacer.pack(side="bottom")
+
         # Player 2
-        self.player2_label = ctk.CTkLabel(self.frame_right, text=f" Player 2:\n\n {self.player2} ({self.age2})",
-                                          font=font_player, text_color='blue')
+        self.player2_label = ctk.CTkLabel(self.frame_right, text=f" Player 2:\n\n {self.player2} ({self.age2})", font=font_player, text_color='blue')
         self.player2_label.pack(pady=10)
         self.score_player2 = 0
-        self.score_player2_label = ctk.CTkLabel(self.frame_right, text=f" Score: {self.score_player2} ",
-                                                font=font_score)
+        self.score_player2_label = ctk.CTkLabel(self.frame_right, text=f" Score: {self.score_player2} ", font=font_score)
         self.score_player2_label.pack(pady=5)
+
+        hint_bal_player2 = 2
+        skips_bal_player2 = 1
+        # Hints and Skips balance
+        self.hint_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Hints left: {hint_bal_player2}", font=font_score, text_color=("blue"))
+        self.hint_bal_player2_label.pack(pady=5, side="bottom")
+        self.skips_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Skips left: {skips_bal_player2}", font=font_score, text_color=("blue"))
+        self.skips_bal_player2_label.pack(pady=5, side="bottom")
+
+
 
         # Questions
         self.category_label = ctk.CTkLabel(self.frame_center_top, text="Category:", font=font_categ, text_color='blue')
