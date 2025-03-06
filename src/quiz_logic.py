@@ -113,25 +113,28 @@ class Logic():
         time.sleep(0.2)
 
     def next_turn(self):
-        """Move to the next player's turn."""
-
+        """Move to the next player's turn and update skip counters and button text."""
         if self.gs.current_question_index < len(self.gs.selected_questions):
-            if self.current_player == 1:
-                self.current_player = 2
+            #  Switch to the next player
+            self.current_player = 2 if self.current_player == 1 else 1
+
+            #  Update Skip Labels for both players
+            self.gs.skips_bal_player1_label.configure(text=f" Skips left: {self.skip_count[1]}")
+            self.gs.skips_bal_player2_label.configure(text=f" Skips left: {self.skip_count[2]}")
+
+            #  Update the Skip button text for the new player
+            self.gs.skip_button.configure(text=f"Skip ({self.skip_count[self.current_player]} left)")
+
+            #  Enable the button if the new player still has skips left
+            if self.skip_count[self.current_player] > 0:
+                self.gs.skip_button.configure(state="normal")
             else:
-                self.current_player = 1
+                self.gs.skip_button.configure(state="disabled")
 
             self.gs.result_label.configure(text="")  # Clear previous result
             self.gs.options_var.set(None)  # Reset selected option
-            if self.last_question == False:
-                self.start_timer() # Start timer for the next player
-            if self.last_question == True:
-                self.stop_timer()
-                self.gs.tic_tac_sound.stop()
-                self.gs.buzz_sound.stop()
-
+            self.start_timer()  # Start the timer for the next player
             self.underline_current_player()
-
         else:
             self.gs.turn_label.configure(text="")  # Clear turn label
 
@@ -274,19 +277,29 @@ class Logic():
         pass
 
     def skip(self):
-        """ Allow the current player to skip a question up to two times per game. """
+        """ Allow the current player to skip a question up to two times per game while keeping their turn. """
         if self.skip_count[self.current_player] > 0:
             self.skip_count[self.current_player] -= 1  # Reduce skip count
             self.display_question()  # Show a new question but keep the turn
 
-            # Update the skip button text to show remaining skips
+            #  Update the Skips Left label for the correct player
+            if self.current_player == 1:
+                self.gs.skips_bal_player1_label.configure(text=f" Skips left: {self.skip_count[1]}")
+            else:
+                self.gs.skips_bal_player2_label.configure(text=f" Skips left: {self.skip_count[2]}")
+
+            #  Update the Skip button text to reflect the current player's skips
             self.gs.skip_button.configure(text=f"Skip ({self.skip_count[self.current_player]} left)")
 
-            # Disable the button if no skips are left
+            #  Disable the button if the current player has no skips left
             if self.skip_count[self.current_player] == 0:
                 self.gs.skip_button.configure(state="disabled")
         else:
             CustomPopup("Warning", f"{self.get_current_player_name()} has no skips left.")
+
+
+
+
 
 
 

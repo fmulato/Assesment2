@@ -473,6 +473,9 @@ class GameScreen:
         bottom_spacer = ctk.CTkFrame(self.frame_left, height=70, fg_color="transparent")
         bottom_spacer.pack(side="bottom")
 
+        self.skips_bal_player1 = 2
+        self.skips_bal_player2 = 2
+
         # Player 1
         self.player1_label = ctk.CTkLabel(self.frame_left, text=f" Player 1:\n\n {self.player1} ({self.age1})", font=font_player, text_color='green')
         self.player1_label.pack(pady=10)
@@ -481,11 +484,12 @@ class GameScreen:
         self.score_player1_label.pack(pady=5)
 
         hint_bal_player1 = 0
-        skips_bal_player1 = 2
+
         # Hints and Skips balance
         self.hint_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Hints left: {hint_bal_player1}", font=font_score, text_color=("green"))
         self.hint_bal_player1_label.pack(pady=5, side="bottom")
-        self.skips_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Skips left: {skips_bal_player1}", font=font_score, text_color=("green"))
+        self.skips_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Skips left: {self.skips_bal_player1}", font=font_score, text_color=("green"))
+        self.skips_bal_player1_label.pack(pady=5, side="bottom")
         self.skips_bal_player1_label.pack(pady=5, side="bottom")
 
         bottom_spacer = ctk.CTkFrame(self.frame_right, height=70, fg_color="transparent")
@@ -499,11 +503,11 @@ class GameScreen:
         self.score_player2_label.pack(pady=5)
 
         hint_bal_player2 = 2
-        skips_bal_player2 = 1
+
         # Hints and Skips balance
         self.hint_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Hints left: {hint_bal_player2}", font=font_score, text_color=("blue"))
         self.hint_bal_player2_label.pack(pady=5, side="bottom")
-        self.skips_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Skips left: {skips_bal_player2}", font=font_score, text_color=("blue"))
+        self.skips_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Skips left: {self.skips_bal_player2}", font=font_score, text_color=("blue"))
         self.skips_bal_player2_label.pack(pady=5, side="bottom")
 
         # Questions
