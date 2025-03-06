@@ -10,9 +10,8 @@ import tkinter.filedialog as filedialog
 import pygame
 import datetime
 import quiz_logic as ql
-
 from database_management import DataBase
-from utils import CustomPopup, Utils, SIZE_WIDTH, SIZE_HEIGHT, LIMIT_TIME
+from utils import CustomPopup, Utils, SIZE_WIDTH, SIZE_HEIGHT
 
 class RootUtils:
     @staticmethod
@@ -124,7 +123,13 @@ class StartScreen:
         self.ranking_button = ctk.CTkButton(self.lower_frame, text="Show Ranking", command=self.show_ranking, font=("Arial", 14), width=100, state="normal")
         self.ranking_button.grid(row=5, column=2, padx=10, pady=10)
 
+        self.exit_button = ctk.CTkButton(self.lower_frame, text="Exit", command=self.exit, font=("Arial", 14), width=100)
+        self.exit_button.grid(row=6, column=1, padx=10, pady=10)
+
         self.root.mainloop()
+
+    def exit(self):
+        quit()
 
     def update_questions(self):
         """Reload questions.json and update the database."""
@@ -284,8 +289,6 @@ class StartScreen:
         elif response == "No":
             print("Operation canceled.")
 
-
-
     def show_ranking(self):
         """ Open the Show Ranking dialog. """
         ShowRankingDialog(self.root, self.db_manager)
@@ -401,7 +404,6 @@ class AddNameDialog(ctk.CTkToplevel):
             self.start_screen.display_player_buttons()
             self.withdraw()  # Hide the pop-up after success
 
-
 class GameScreen:
 
     def __init__(self, root, player1='Player 1', age1="", player2='Player 2', age2=""):
@@ -504,13 +506,26 @@ class GameScreen:
         self.skips_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Skips left: {skips_bal_player2}", font=font_score, text_color=("blue"))
         self.skips_bal_player2_label.pack(pady=5, side="bottom")
 
-
+        # Questions
+        # self.category_label = ctk.CTkLabel(self.frame_center_top, text="Category:", font=font_categ, text_color='blue')
+        # self.category_label.grid(row=0, column=0, pady=10, padx=10)
+        # self.question_label = ctk.CTkLabel(self.frame_center_top, text="Question will appear here", font=font_quest, wraplength=500)
+        # self.question_label.grid(row=1, column=0, pady=10, padx=10)
 
         # Questions
         self.category_label = ctk.CTkLabel(self.frame_center_top, text="Category:", font=font_categ, text_color='blue')
         self.category_label.grid(row=0, column=0, pady=10, padx=10)
-        self.question_label = ctk.CTkLabel(self.frame_center_top, text="Question will appear here", font=font_quest, wraplength=500)
+
+        self.question_label = ctk.CTkLabel(self.frame_center_top, text="Question will appear here", font=font_quest)
         self.question_label.grid(row=1, column=0, pady=10, padx=10)
+
+        # Function to update wraplength - fit text according to frame
+        def update_wraplength():
+            frame_width = self.frame_center_top.winfo_width()
+            self.question_label.configure(wraplength=int(frame_width * 0.8))
+
+        # Call the function once to set the initial wraplength
+        self.frame_center_top.bind("<Configure>", lambda e: update_wraplength())
 
         # Options
         self.options_var = ctk.StringVar()
@@ -532,9 +547,9 @@ class GameScreen:
         self.result_label.grid(pady=10, padx=10, sticky="nsew", row=5, column=0)
 
         # Load questions
-        # self.logic.save_player_info()
         self.questions = DataBase().load_questions()
-        self.selected_questions = Utils().select_random_elements(self.questions)
+        number_question = DataBase().update_global_settings()[1]
+        self.selected_questions = Utils().select_random_elements(self.questions, number_question * 2)
         self.current_question_index = 0
 
         self.frame_center_bottom.grid_columnconfigure(0, weight=1)
@@ -543,10 +558,6 @@ class GameScreen:
 
         self.exit_button = ctk.CTkButton(self.frame_center_bottom, text="Exit", command=self.exit, font=("Arial", 14), width=100)
         self.exit_button.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
-
-        # self.config_button = ctk.CTkButton(self.frame_center_bottom, text="Select New Players", command=self.back_to_start_screen, font=("Arial", 14), width=100)
-        # self.config_button.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
-        # self.restart_button.grid_forget()
 
         # label to show the current player
         self.turn_label = ctk.CTkLabel(self.frame_center_bottom, text="", font=("Arial", 16), text_color="black")
@@ -626,9 +637,6 @@ class GameScreen:
     def exit(self):
         quit()
 
-    def config(self):
-        pass
-
     def back_to_start_screen(self):
         """ Back to the start screen to select new players. """
         self.root.withdraw()
@@ -666,7 +674,7 @@ class ShowRulesDialog(ctk.CTkToplevel):
             "5. You have 15 seconds to answer each question as default, however it can be changed.\n\n"
             "6. Earn 10 points for each correct answer. Using a hint reduces points by 50%.\n\n"
             "7. Skip a question twice per game to transfer it to your opponent.\n\n"
-            "8. The final question is worth double points (20 points) or 10 points if a hint is used.\n\n"
+            "8. The final question is bonus: +20 points (+10 points if a hint is used). Lose -10 if wrong. \n\n"
             "9. The player with the most scores wins.\n\n"
             "10. Check the ranking to see who has the most scores in all games (only Top 20).\n\n"
             "11. Have fun and challenge your brain while learning!"
@@ -772,35 +780,51 @@ class SetupDialog(ctk.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
         self.title("Game Setup")
-        self.geometry("400x300")
-        RootUtils.center_window(self, 400, 300)
+        RootUtils.center_window(self, 385, 180)
         self.grab_set()
+        self.db_manager = DataBase()
+        limit_time = DataBase().update_global_settings()[0]
+        number_question = DataBase().update_global_settings()[1]
 
         # Setup options
-        ctk.CTkLabel(self, text="Game Settings:", font=("Arial", 16, "bold")).pack(pady=10)
+        ctk.CTkLabel(self, text="Game Settings:", font=("Arial", 16, "bold"), anchor="center" ).grid(row=0, column=0, sticky="nsew")
 
-        # Example setting: Time limit per question
+        # Time limit per question
         self.time_limit_label = ctk.CTkLabel(self, text="Time Limit per Question (seconds):", font=("Arial", 14))
-        self.time_limit_label.pack(pady=5)
+        self.time_limit_label.grid(row=1, column=0, padx=5)
 
-        self.time_limit_entry = ctk.CTkEntry(self, width=100)
-        self.time_limit_entry.insert(0, "10")  # Default value
-        self.time_limit_entry.pack(pady=5)
+        self.time_limit_entry = ctk.CTkEntry(self, width=40)
+        self.time_limit_entry.insert(0, limit_time)  # Default value
+        self.time_limit_entry.grid(row=1, column=1, padx=5)
+
+        # Number of questions
+        self.n_questions_label = ctk.CTkLabel(self, text="Number of Questions per Player:", font=("Arial", 14))
+        self.n_questions_label.grid(row=2, column=0)
+
+        self.n_questions_entry = ctk.CTkEntry(self, width=40)
+        self.n_questions_entry.insert(0, number_question)  # Default value
+        self.n_questions_entry.grid(row=2, column=1)
+
+        bottom_spacer = ctk.CTkFrame(self, height=10, fg_color="transparent")
+        bottom_spacer.grid(row=3, pady=10)
 
         # Save button
         self.save_button = ctk.CTkButton(self, text="Save", command=self.save_settings, font=("Arial", 14), width=100)
-        self.save_button.pack(pady=10)
+        self.save_button.grid(row=4, column=0)
 
         # Close button
         self.close_button = ctk.CTkButton(self, text="Close", command=self.destroy, font=("Arial", 14), width=100)
-        self.close_button.pack(pady=10)
+        self.close_button.grid(row=4, column=1)
 
     def save_settings(self):
         """ Save the settings and update the global LIMIT_TIME. """
-        pass
+        time_limit = self.time_limit_entry.get()
+        num_question = self.n_questions_entry.get()
+        self.db_manager.update_setup(time_limit, num_question)
+        self.db_manager = DataBase()
+        self.destroy()
 
 
-# gui.py
 class LastQuestionDialog(ctk.CTkToplevel):
     """ Custom pop-up window to inform that it's the last question. """
 
@@ -816,7 +840,7 @@ class LastQuestionDialog(ctk.CTkToplevel):
         # Message
         message_label = ctk.CTkLabel(self, text=f"{player_of_the_round}, this is your last question!\n\n"
                                                 "Bonus question!\n\n"
-                                                "20 points if correct\n"
+                                                "+20 points if correct\n"
                                                 "-10 points if wrong", font=("Arial", 13))
         message_label.pack(pady=20)
 
