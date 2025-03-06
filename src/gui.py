@@ -572,7 +572,7 @@ class GameScreen:
 
         self.skip_button = ctk.CTkButton(self.frame_center_bottom, text="Skip", command=self.logic.skip, font=("Arial", 14), width=100)
         self.skip_button.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
-        self.skip_button.configure(state="disabled")
+        self.skip_button.configure(state="normal")
 
         self.logic.display_question()
         self.logic.start_timer() # start the timer

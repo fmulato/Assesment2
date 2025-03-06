@@ -25,6 +25,7 @@ class Logic():
         self.time_limit = gui.LIMIT_TIME
         self.timer_active = False    # To track if the timer is running
         self.underline_current_player()
+        self.skip_count = {1: 2, 2: 2}  # Each player gets 2 skips
 
     def start_timer(self):
         self.timer_active = True
@@ -271,5 +272,19 @@ class Logic():
         pass
 
     def skip(self):
-        pass
+        """ Allow the current player to skip a question up to two times per game. """
+        if self.skip_count[self.current_player] > 0:
+            self.skip_count[self.current_player] -= 1  # Reduce skip count
+            self.display_question()  # Show a new question but keep the turn
+
+            # Update the skip button text to show remaining skips
+            self.gs.skip_button.configure(text=f"Skip ({self.skip_count[self.current_player]} left)")
+
+            # Disable the button if no skips are left
+            if self.skip_count[self.current_player] == 0:
+                self.gs.skip_button.configure(state="disabled")
+        else:
+            CustomPopup("Warning", f"{self.get_current_player_name()} has no skips left.")
+
+
 
