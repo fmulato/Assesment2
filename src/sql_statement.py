@@ -3,6 +3,9 @@ File to write SQL statements for database creation and management.
 All SQL statements are defined here for better organisation and maintainability.
 """
 
+LIMIT_TIME_0 = 10
+NUMBER_QUESTION_0 = 3
+
 ### DATABASE PATH AND NAME###
 DB_PATH = "brainup.db"
 
@@ -36,6 +39,12 @@ CREATE_TABLE_QUESTIONS = """
                 "correct_answer" INTEGER NOT NULL
             );
             """
+CREATE_SETUP = """
+            CREATE TABLE IF NOT EXISTS setup (
+                "time_limit" INTEGER,
+                "num_questions" INTEGER
+            );
+            """
 
 ### CHECKS ###
 CHECK_USERNAME = """
@@ -64,6 +73,11 @@ INSERT_QUESTIONS = """
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 """
 
+INSERT_SETUP = f"""
+                INSERT INTO setup (time_limit, num_questions) 
+                VALUES ({LIMIT_TIME_0}, {NUMBER_QUESTION_0}) """
+                # deaful values for initial load
+
 ### SELECTS ###
 SELECT_ALL_QUESTIONS = """
                 SELECT * FROM questions
@@ -90,4 +104,22 @@ SELECT_RANKING = """
                 JOIN scores s ON p.id_player = s.id_player
                 ORDER BY s.current_score DESC
                 LIMIT 20
+                """
+
+SELECT_SETUP = """
+                SELECT COUNT(*) FROM setup
+               """
+
+SELECT_SETUP2 = """
+                SELECT * FROM setup
+               """
+
+### UPDATES ###
+UPDATE_SETUP = """
+                UPDATE setup SET time_limit = ?, num_questions = ?
+                """
+
+### DELETES ###
+DELETE_PlAYER = """
+                
                 """

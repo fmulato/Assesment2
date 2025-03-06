@@ -1,21 +1,20 @@
 """
-This module contains utility functions to load questions into the database from a JSON file.
-Verifies if a question already exists in the database. If it does, it skips the insertion.
+This module contains utility functions for the Brain Up! game such as:
+- Selecting random elements from a list
+- Shuffling answers
 """
 
 import random
-from typing import Sequence, List, Tuple
+from typing import List, Tuple
 import customtkinter as ctk
-from datetime import datetime
 
 SIZE_WIDTH = 800
 SIZE_HEIGHT = 600
-LIMIT_TIME = 12
-NUMBER_QUESTION = 5
+
 
 class Utils:
 
-    def select_random_elements(self, elements, n=NUMBER_QUESTION*2) -> List[Tuple[int, any]]:
+    def select_random_elements(self, elements, n) -> List[Tuple[int, any]]:
 
         if not isinstance(elements, (list, tuple, set)):
             raise ValueError("The 'elements' argument must be a list, tuple, or set.")
@@ -25,23 +24,6 @@ class Utils:
 
         return random.sample(list(enumerate(elements, start=1)), n)
 
-    # def shuffle_answers(self, options, correct_answer):
-    #     """Shuffle the answers and return a new randomized list with the correct answer index updated."""
-    #     indexed_options = list(enumerate(options))  # Attach original indices
-    #     random.shuffle(indexed_options)  # Shuffle the options
-    #
-    #     # Extract shuffled options and find the new index of the correct answer
-    #     shuffled_options = [option[1] for option in indexed_options]
-    #     new_correct_index = [i for i, option in enumerate(indexed_options) if option[0] == correct_answer - 1][0] + 1
-    #
-    #     return shuffled_options, new_correct_index  # Return shuffled options & updated correct answer index
-    #
-    # def calculate_age(self, birthday):
-    #     """ Calculate age from birth date. """
-    #     birth_date = datetime.strptime(birthday, "%Y-%m-%d")
-    #     today = datetime.today()
-    #     age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
-    #     return age
 
     def shuffle_answers(self, options, correct_answer):
         """Shuffle the answers and return a new randomized list with the correct answer index updated."""

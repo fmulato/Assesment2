@@ -25,6 +25,7 @@ class DataBase:
     def __init__(self):
         self.create_tables()
 
+
     def create_tables(self):
         """ Creates tables for players, scores, and questions if they do not exist in brainup.db. """
         connection = sqlite3.connect(DB_PATH)
@@ -32,6 +33,12 @@ class DataBase:
         cursor.execute(sql_st.CREATE_TABLE_PLAYERS)
         cursor.execute(sql_st.CREATE_TABLE_SCORES)
         cursor.execute(sql_st.CREATE_TABLE_QUESTIONS)
+        cursor.execute(sql_st.CREATE_SETUP)
+
+        # Check if the setup table is empty, if it is, insert the default data
+        cursor.execute(sql_st.SELECT_SETUP)
+        if cursor.fetchone()[0] == 0:
+            cursor.execute(sql_st.INSERT_SETUP)
 
         connection.commit()
         connection.close()
@@ -175,5 +182,25 @@ class DataBase:
         connection.close()
 
         return ranking
+
+    def update_setup(self, time_limit, num_questions):
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
+
+        parameters = (time_limit,num_questions,)
+
+        cursor.execute(sql_st.UPDATE_SETUP, parameters)
+        connection.commit()
+        connection.close()
+
+    def update_global_settings(self):
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
+
+        cursor.execute(sql_st.SELECT_SETUP2)
+        result = cursor.fetchone()
+        connection.close()
+
+        return result
 
 

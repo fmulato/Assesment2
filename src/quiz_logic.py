@@ -17,12 +17,14 @@ from utils import Utils
 import gui
 
 
-
 class Logic():
     def __init__(self, gs):
         self.gs = gs
         self.current_player = 1  # 1 for Player 1, 2 for Player 2
-        self.time_limit = gui.LIMIT_TIME
+        gui.DataBase.update_global_settings(self)
+        LIMIT_TIME = gui.DataBase().update_global_settings()[0]
+        self.time_limit = LIMIT_TIME
+        #self.time_limit = gui.LIMIT_TIME
         self.timer_active = False    # To track if the timer is running
         self.underline_current_player()
         self.skip_count = {1: 2, 2: 2}  # Each player gets 2 skips
