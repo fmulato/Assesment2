@@ -483,10 +483,12 @@ class GameScreen:
         self.score_player1_label = ctk.CTkLabel(self.frame_left, text=f" Score: {self.score_player1} ", font=font_score)
         self.score_player1_label.pack(pady=5)
 
-        hint_bal_player1 = 0
+        self.hint_bal_player1 = 2
+
 
         # Hints and Skips balance
-        self.hint_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Hints left: {hint_bal_player1}", font=font_score, text_color=("green"))
+        self.hint_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Hints left: {self.hint_bal_player1}", font=font_score, text_color=("green"))
+
         self.hint_bal_player1_label.pack(pady=5, side="bottom")
         self.skips_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Skips left: {self.skips_bal_player1}", font=font_score, text_color=("green"))
         self.skips_bal_player1_label.pack(pady=5, side="bottom")
@@ -502,10 +504,11 @@ class GameScreen:
         self.score_player2_label = ctk.CTkLabel(self.frame_right, text=f" Score: {self.score_player2} ", font=font_score)
         self.score_player2_label.pack(pady=5)
 
-        hint_bal_player2 = 2
+        self.hint_bal_player2 = 2
 
         # Hints and Skips balance
-        self.hint_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Hints left: {hint_bal_player2}", font=font_score, text_color=("blue"))
+        self.hint_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Hints left: {self.hint_bal_player2}", font=font_score, text_color=("blue"))
+
         self.hint_bal_player2_label.pack(pady=5, side="bottom")
         self.skips_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Skips left: {self.skips_bal_player2}", font=font_score, text_color=("blue"))
         self.skips_bal_player2_label.pack(pady=5, side="bottom")

@@ -28,6 +28,7 @@ class Logic():
         self.timer_active = False    # To track if the timer is running
         self.underline_current_player()
         self.skip_count = {1: 2, 2: 2}  # Each player gets 2 skips
+        self.hint_count = {1: 2, 2: 2}  # Each player gets 2 skips
 
     def start_timer(self):
         self.timer_active = True
@@ -113,30 +114,37 @@ class Logic():
         time.sleep(0.2)
 
     def next_turn(self):
-        """Move to the next player's turn and update skip counters and button text."""
+        """Move to the next player's turn and update skip & hint buttons."""
         if self.gs.current_question_index < len(self.gs.selected_questions):
-            #  Switch to the next player
+            # Switch to the next player
             self.current_player = 2 if self.current_player == 1 else 1
 
-            #  Update Skip Labels for both players
+            # Update Skip Labels for both players
             self.gs.skips_bal_player1_label.configure(text=f" Skips left: {self.skip_count[1]}")
             self.gs.skips_bal_player2_label.configure(text=f" Skips left: {self.skip_count[2]}")
 
-            #  Update the Skip button text for the new player
+            # Update Skip button text for the new player
             self.gs.skip_button.configure(text=f"Skip ({self.skip_count[self.current_player]} left)")
 
-            #  Enable the button if the new player still has skips left
-            if self.skip_count[self.current_player] > 0:
-                self.gs.skip_button.configure(state="normal")
-            else:
-                self.gs.skip_button.configure(state="disabled")
+            # Enable Skip button if the current player still has skips left
+            self.gs.skip_button.configure(state="normal" if self.skip_count[self.current_player] > 0 else "disabled")
 
-            self.gs.result_label.configure(text="")  # Clear previous result
-            self.gs.options_var.set(None)  # Reset selected option
-            self.start_timer()  # Start the timer for the next player
+            #  NEW: Update Hint button for the new player
+            self.gs.hint_button.configure(
+                text=f"Hint ({self.gs.hint_bal_player1 if self.current_player == 1 else self.gs.hint_bal_player2} left)")
+
+            #  NEW: Enable Hint button if the new player still has hints left
+            if (self.current_player == 1 and self.gs.hint_bal_player1 > 0) or (
+                    self.current_player == 2 and self.gs.hint_bal_player2 > 0):
+                self.gs.hint_button.configure(state="normal")
+            else:
+                self.gs.hint_button.configure(state="disabled")
+
+            # Update the turn label
+            self.gs.result_label.configure(text="")
+            self.gs.options_var.set(None)
+            self.start_timer()
             self.underline_current_player()
-        else:
-            self.gs.turn_label.configure(text="")  # Clear turn label
 
     def is_last_round(self):
         """Check if the current question is one of the last two questions."""
@@ -274,21 +282,35 @@ class Logic():
             self.gs.player1_label.configure(font=("Arial", 14), fg_color="gray80")
 
     def hint(self):
-        """ Show hint for the current question """
-        current_question_data = self.gs.selected_questions[self.gs.current_question_index]
-
-        # Unpack the nested tuple if necessary
-        if isinstance(current_question_data[1], tuple):
-            current_question_data = current_question_data[1]
-
-        if len(current_question_data) >= 9:
-            question_text = current_question_data[2]  # The question text
-            hint = current_question_data[8]  # The hint from the database (index 8)
-
-            # Show the hint in a popup
-            CustomPopup("Hint", f"{hint}")
+        """Allow the current player to use a hint up to two times per game while keeping their turn."""
+        if self.current_player == 1:
+            if self.gs.hint_bal_player1 > 0:
+                self.gs.hint_bal_player1 -= 1  # Reduce hint count
+                self.gs.hint_bal_player1_label.configure(text=f" Hints left: {self.gs.hint_bal_player1}")
+            else:
+                CustomPopup("Warning", f"{self.get_current_player_name()} has no hints left.")
+                return
         else:
-            print("Error: Incorrect data format for the current question.")
+            if self.gs.hint_bal_player2 > 0:
+                self.gs.hint_bal_player2 -= 1  # Reduce hint count
+                self.gs.hint_bal_player2_label.configure(text=f" Hints left: {self.gs.hint_bal_player2}")
+            else:
+                CustomPopup("Warning", f"{self.get_current_player_name()} has no hints left.")
+                return
+
+        # Display the hint for the current question
+        _, question_data = self.gs.selected_questions[self.gs.current_question_index]
+        hint_text = question_data[8]  # Hint is stored at index 8
+        CustomPopup("Hint", hint_text)
+
+        # Update the Hint button text to reflect the current player's hints left
+        self.gs.hint_button.configure(
+            text=f"Hint ({self.gs.hint_bal_player1 if self.current_player == 1 else self.gs.hint_bal_player2} left)")
+
+        # Disable the button if no hints are left
+        if (self.current_player == 1 and self.gs.hint_bal_player1 == 0) or (
+                self.current_player == 2 and self.gs.hint_bal_player2 == 0):
+            self.gs.hint_button.configure(state="disabled")
 
     def skip(self):
         """ Allow the current player to skip a question up to two times per game while keeping their turn. """
