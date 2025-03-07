@@ -27,9 +27,10 @@ class Logic():
         self.time_limit = LIMIT_TIME
         #self.time_limit = gui.LIMIT_TIME
         self.timer_active = False    # To track if the timer is running
+        self.hint_flag = False   # To track if the hint has been used
         self.underline_current_player()
         self.skip_count = {1: 2, 2: 2}  # Each player gets 2 skips
-        self.hint_count = {1: 2, 2: 2}  # Each player gets 2 skips
+        self.hint_count = {1: 2, 2: 2}  # Each player gets 2 hints
 
     def start_timer(self):
         self.timer_active = True
@@ -184,10 +185,12 @@ class Logic():
         base_points = 20 if is_last_round else 10
 
         # Apply hint penalty (50% reduction)
-        if self.current_player == 1 and self.gs.hint_bal_player1 < 2:
-            base_points //= 2  # Reduce points if Player 1 used a hint
-        elif self.current_player == 2 and self.gs.hint_bal_player2 < 2:
-            base_points //= 2  # Reduce points if Player 2 used a hint
+        if self.current_player == 1 and self.gs.hint_bal_player1 < 2 and self.hint_flag == True:
+            #base_points //= 2  # Reduce points if Player 1 used a hint
+            base_points *= 0.5 # Reduce 50% of points if Player 1 used a hint
+        elif self.current_player == 2 and self.gs.hint_bal_player2 < 2 and self.hint_flag == True:
+            #base_points //= 2  # Reduce points if Player 2 used a hint
+            base_points *= 0.5  # Reduce 50% of points if Player 1 used a hint
 
         if selected_option_int == self.gs.index_mapping[correct_answer]:
             self.gs.result_label.configure(text="Correct!", text_color="blue")
@@ -202,7 +205,7 @@ class Logic():
             self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
         else:
             self.gs.result_label.configure(text="Incorrect!", text_color="red")
-            penalty = -10 if is_last_round else 0
+            penalty = -10 if is_last_round else -5
 
             if self.current_player == 1 and self.gs.score_player1 > 0:
                 self.gs.score_player1 += penalty
@@ -217,6 +220,7 @@ class Logic():
 
         self.gs.submit_button.configure(state="disabled")
         self.gs.next_button.configure(state="normal")
+        self.hint_flag = False
 
     def next_question(self):
         """Move to the next question."""
@@ -303,7 +307,8 @@ class Logic():
             else:
                 CustomPopup("Warning", f"{self.get_current_player_name()} has no hints left.")
                 return
-
+        # set flag for hint usage:
+        self.hint_flag = True
         # Display the hint for the current question
         _, question_data = self.gs.selected_questions[self.gs.current_question_index]
         hint_text = question_data[8]  # Hint is stored at index 8
