@@ -124,22 +124,26 @@ class DataBase:
             print("Error: File JSON is invalid.")
             return
 
-        conn = sqlite3.connect('brainup.db')
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         n_questions_loaded = 0
 
         for item in data:
+            if 'category' not in item or 'question' not in item or 'options' not in item or 'correct_answer' not in item:
+                print(f"Skipping invalid item: {item}")
+                continue  # Skip invalid items
             category = item['category']
             question = item['question']
             options = item['options']
             correct_answer = int(item['correct_answer'])
+            hint = item['hint']
 
             # before insert check if question already exists
             if self.check_if_question_exists(question):
                 #print(f"Question '{question}' already exists in the database.")
                 continue
 
-            cursor.execute(sql_st.INSERT_QUESTIONS, (category, question, options[0], options[1], options[2], options[3], correct_answer))
+            cursor.execute(sql_st.INSERT_QUESTIONS,(category, question, options[0], options[1], options[2], options[3], correct_answer, hint))
 
             n_questions_loaded += 1
 

@@ -36,7 +36,8 @@ CREATE_TABLE_QUESTIONS = """
                 "option_2" TEXT NOT NULL,
                 "option_3" TEXT NOT NULL,
                 "option_4" TEXT NOT NULL,
-                "correct_answer" INTEGER NOT NULL
+                "correct_answer" INTEGER NOT NULL,
+                "hint" TEXT NOT NULL
             );
             """
 CREATE_SETUP = """
@@ -69,8 +70,8 @@ INSERT_AGE_TO_SCORES = """
                 """
 
 INSERT_QUESTIONS = """
-                INSERT INTO questions (category, question, option_1, option_2, option_3, option_4, correct_answer)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO questions (category, question, option_1, option_2, option_3, option_4, correct_answer, hint)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """
 
 INSERT_SETUP = f"""

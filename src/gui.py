@@ -583,7 +583,7 @@ class GameScreen:
 
         self.hint_button = ctk.CTkButton(self.frame_center_bottom, text="Hint", command=self.logic.hint, font=("Arial", 14), width=100)
         self.hint_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
-        self.hint_button.configure(state="disabled")
+        self.hint_button.configure(state="normal")
 
         self.skip_button = ctk.CTkButton(self.frame_center_bottom, text="Skip", command=self.logic.skip, font=("Arial", 14), width=100)
         self.skip_button.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
