@@ -192,6 +192,8 @@ class Logic():
             #base_points //= 2  # Reduce points if Player 2 used a hint
             base_points *= 0.5  # Reduce 50% of points if Player 1 used a hint
 
+        base_points = int(base_points)
+
         if selected_option_int == self.gs.index_mapping[correct_answer]:
             self.gs.result_label.configure(text="Correct!", text_color="blue")
 
