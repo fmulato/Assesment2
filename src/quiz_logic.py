@@ -15,7 +15,7 @@ import time
 import pygame
 from utils import Utils
 import gui
-
+from utils import CustomPopup
 
 class Logic():
     def __init__(self, gs):
@@ -274,7 +274,21 @@ class Logic():
             self.gs.player1_label.configure(font=("Arial", 14), fg_color="gray80")
 
     def hint(self):
-        pass
+        """ Show hint for the current question """
+        current_question_data = self.gs.selected_questions[self.gs.current_question_index]
+
+        # Unpack the nested tuple if necessary
+        if isinstance(current_question_data[1], tuple):
+            current_question_data = current_question_data[1]
+
+        if len(current_question_data) >= 9:
+            question_text = current_question_data[2]  # The question text
+            hint = current_question_data[8]  # The hint from the database (index 8)
+
+            # Show the hint in a popup
+            CustomPopup("Hint", f"{hint}")
+        else:
+            print("Error: Incorrect data format for the current question.")
 
     def skip(self):
         """ Allow the current player to skip a question up to two times per game while keeping their turn. """
