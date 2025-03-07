@@ -207,4 +207,22 @@ class DataBase:
 
         return result
 
+    def delete_player(self, username):
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
 
+        try:
+            cursor.execute(sql_st.DELETE_PLAYER, (username,))
+            connection.commit()
+
+            if cursor.rowcount > 0:
+                return True  # Success
+            else:
+                return False  # Player not found
+
+        except sqlite3.Error as e:
+            CustomPopup("Database Error", f"An error occurred: {e}")
+            return False
+
+        finally:
+            connection.close()

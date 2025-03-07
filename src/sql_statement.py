@@ -121,6 +121,7 @@ UPDATE_SETUP = """
                 """
 
 ### DELETES ###
-DELETE_PlAYER = """
-                
+DELETE_PLAYER = """
+                DELETE FROM players WHERE username = ? 
                 """
+

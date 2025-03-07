@@ -12,6 +12,7 @@ import datetime
 import quiz_logic as ql
 from database_management import DataBase
 from utils import CustomPopup, Utils, SIZE_WIDTH, SIZE_HEIGHT
+import sql_statement as sql_st
 
 class RootUtils:
     @staticmethod
@@ -275,19 +276,36 @@ class StartScreen:
         AddNameDialog(self.root, self.db_manager, self)
 
     def delete_player(self):
-        msg = CTkMessagebox(title="Confirm",
-                            message="Do you want to delete this player?",
-                            icon="question",
-                            option_1="No",
-                            option_2="Yes")
+        """Delete the selected player from the database and refresh the player list."""
+        if not self.selected_players:
+            CustomPopup("Warning", "Please select a player to delete.")
+            return
 
+        player_to_delete = self.selected_players[0]  # Delete the first selected player
+        username_to_delete = player_to_delete[0]  # Extract username
+
+        # Confirmation popup
+        msg = CTkMessagebox(
+            title="Confirm Deletion",
+            message=f"Are you sure you want to delete {username_to_delete}?",
+            icon="question",
+            option_1="No",
+            option_2="Yes"
+        )
         response = msg.get()
 
         if response == "Yes":
-            CTkMessagebox(message="Operation successful!", icon="check", option_1="OK")
-            print("Player deleted.")
-        elif response == "No":
-            print("Operation canceled.")
+            db = DataBase()
+            deletion_success = db.delete_player(username_to_delete)  # Pass username to DB method
+
+            if deletion_success:
+                CustomPopup("Success", f"Player {username_to_delete} has been deleted.")
+            else:
+                CustomPopup("Error", f"Failed to delete player {username_to_delete}.")
+
+            # Refresh the player list on the screen
+            self.selected_players.clear()  # Clear selection
+            self.display_player_buttons()  # Refresh player buttons
 
     def show_ranking(self):
         """ Open the Show Ranking dialog. """
