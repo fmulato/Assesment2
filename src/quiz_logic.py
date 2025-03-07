@@ -151,79 +151,71 @@ class Logic():
         return self.gs.current_question_index >= len(self.gs.selected_questions) - 2
 
     def check_answer(self):
-        """Check the selected answer."""
-        # Stop the timer and sounds
+        """Check the selected answer and apply hint penalty if a hint was used."""
         self.stop_timer()
         self.gs.tic_tac_sound.stop()
         self.gs.buzz_sound.stop()
 
-        # Ensure the timer label is not displayed
         if hasattr(self.gs, "timer") and self.gs.timer:
             self.gs.timer.grid_forget()
 
-        # Get the selected option
         selected_option = self.gs.options_var.get()
         _, question_data = self.gs.selected_questions[self.gs.current_question_index]
         correct_answer = question_data[7]
 
-        # Check if the answer is given within the time limit
         if selected_option is None or selected_option == 'None':
-            self.next_turn()  # Move to the next player's turn
+            self.next_turn()
             return
 
-        # Try to convert selected_option to an integer
         try:
             selected_option_int = int(selected_option)
         except ValueError:
             self.gs.result_label.configure(text="Invalid selection!", text_color="red")
-            self.next_turn()  # Move to the next player's turn
+            self.next_turn()
             return
 
         for button in self.gs.option_buttons:
             button.configure(text_color="black")
 
-        # Determine if it's the last round
         is_last_round = self.is_last_round()
 
-        # Check if the selected answer is correct
+        # Determine base points (Last question: 20, Normal: 10)
+        base_points = 20 if is_last_round else 10
+
+        # Apply hint penalty (50% reduction)
+        if self.current_player == 1 and self.gs.hint_bal_player1 < 2:
+            base_points //= 2  # Reduce points if Player 1 used a hint
+        elif self.current_player == 2 and self.gs.hint_bal_player2 < 2:
+            base_points //= 2  # Reduce points if Player 2 used a hint
+
         if selected_option_int == self.gs.index_mapping[correct_answer]:
             self.gs.result_label.configure(text="Correct!", text_color="blue")
 
-            # Update the score for the current player
-            points = 20 if is_last_round else 10  # Double points for the last question
             if self.current_player == 1:
-                self.gs.score_player1 += points
+                self.gs.score_player1 += base_points
                 self.gs.score_player1_label.configure(text=f"Score: {self.gs.score_player1}")
             else:
-                self.gs.score_player2 += points
+                self.gs.score_player2 += base_points
                 self.gs.score_player2_label.configure(text=f"Score: {self.gs.score_player2}")
 
             self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
         else:
             self.gs.result_label.configure(text="Incorrect!", text_color="red")
-            # Deduct points for wrong answer only if was last question
             penalty = -10 if is_last_round else 0
-            if self.current_player == 1:
-                if self.gs.score_player1 > 0: # only deduct if player 1 has points
-                    self.gs.score_player1 += penalty  # Deduct 10 points for wrong answer
-                    self.gs.score_player1_label.configure(text=f"Score: {self.gs.score_player1}")
-            else:
-                if self.gs.score_player2 > 0:  # only deduct if player 2 has points
-                    self.gs.score_player2 += penalty  # Deduct 10 points for wrong answer
-                    self.gs.score_player2_label.configure(text=f"Score: {self.gs.score_player2}")
+
+            if self.current_player == 1 and self.gs.score_player1 > 0:
+                self.gs.score_player1 += penalty
+                self.gs.score_player1_label.configure(text=f"Score: {self.gs.score_player1}")
+            elif self.current_player == 2 and self.gs.score_player2 > 0:
+                self.gs.score_player2 += penalty
+                self.gs.score_player2_label.configure(text=f"Score: {self.gs.score_player2}")
 
             self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
             if selected_option:
                 self.gs.option_buttons[selected_option_int - 1].configure(text_color="red")
 
-        # Enable the next button and disable the submit button
         self.gs.submit_button.configure(state="disabled")
         self.gs.next_button.configure(state="normal")
-
-        # check if the timer is active before playing the sound
-        if self.timer_active:
-            self.gs.submit_button.configure(state="disabled")
-            self.gs.next_button.configure(state="normal")
 
     def next_question(self):
         """Move to the next question."""
