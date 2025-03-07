@@ -16,6 +16,7 @@ import pygame
 from utils import Utils
 import gui
 from utils import CustomPopup
+from database_management import DataBase
 
 class Logic():
     def __init__(self, gs):
@@ -240,6 +241,19 @@ class Logic():
     def determine_quiz_winner(self):
         self.stop_timer()
         self.gs.timer.grid_forget()
+
+        db = DataBase()  # Create a database instance
+
+        # Save final scores for Player 1
+        player1_username = self.gs.player1
+        player1_score = self.gs.score_player1
+        db.save_final_score(player1_username, player1_score)
+
+        # Save final scores for Player 2
+        player2_username = self.gs.player2
+        player2_score = self.gs.score_player2
+        db.save_final_score(player2_username, player2_score)
+
 
         # Play the winner sound
         if not hasattr(self, 'winner_sound_played'):

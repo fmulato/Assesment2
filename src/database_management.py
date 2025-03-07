@@ -226,3 +226,42 @@ class DataBase:
 
         finally:
             connection.close()
+
+    def save_final_score(self, username, score):
+        """Save the player's final score in the database with their age."""
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
+
+        try:
+            # Get the player's ID from the players table
+            cursor.execute(sql_st.SELECT_PLAYER_BY_USERNAME, (username,))
+            result = cursor.fetchone()
+
+            if result is None:
+                CustomPopup("Error", f"User {username} not found in players table!")
+                return False
+
+            id_player = result[0]  # Extract only the player ID
+
+            # Calculate the player's age from their birthday
+            cursor.execute(sql_st.SELECT_ALL_PLAYERS_WITH_AGE + " WHERE username = ?", (username,))
+            age_result = cursor.fetchone()
+
+            if age_result is None:
+                CustomPopup("Error", f"Could not determine age for {username}.")
+                return False
+
+            player_age = age_result[1]  # Extract calculated age
+
+            # Insert the final score into the scores table
+            cursor.execute(sql_st.INSERT_SCORE, (id_player, player_age, score))  # Store age
+            connection.commit()
+            return True
+
+        except sqlite3.Error as e:
+            CustomPopup("Database Error", f"An error occurred: {e}")
+            return False
+
+        finally:
+            connection.close()
+
