@@ -103,7 +103,7 @@ SELECT_RANKING = """
                 SELECT p.username, s.age, s.date_time, s.current_score
                 FROM players p
                 JOIN scores s ON p.id_player = s.id_player
-                ORDER BY s.current_score DESC
+                ORDER BY s.current_score, s.age DESC
                 LIMIT 20
                 """
 
@@ -115,6 +115,11 @@ SELECT_SETUP2 = """
                 SELECT * FROM setup
                """
 
+SELECT_ID_QUESTIONS = """
+                SELECT id_question FROM questions
+                WHERE question = ?
+                """
+
 ### UPDATES ###
 UPDATE_SETUP = """
                 UPDATE setup SET time_limit = ?, num_questions = ?
@@ -123,5 +128,10 @@ UPDATE_SETUP = """
 ### DELETES ###
 DELETE_PLAYER = """
                 DELETE FROM players WHERE username = ? 
+                """
+
+UPDATE_QUESTIONS = """
+                UPDATE questions SET category = ?, question = ?, option_1 = ?, option_2 = ?, option_3 = ?, option_4 = ?, correct_answer = ?, hint = ?
+                WHERE id_question = ?
                 """
 

@@ -140,7 +140,18 @@ class DataBase:
 
             # before insert check if question already exists
             if self.check_if_question_exists(question):
-                #print(f"Question '{question}' already exists in the database.")
+                # update question instead of inserting
+                # get id of question
+                cursor.execute(sql_st.SELECT_ID_QUESTIONS, (question,))
+                result = cursor.fetchone()
+
+                if result is None:
+                    CustomPopup("Error", f"Question {question} not found in questions table!")
+                    return False
+
+                id_question = result[0]
+                cursor.execute(sql_st.UPDATE_QUESTIONS,(category, question, options[0], options[1], options[2], options[3], correct_answer, hint, id_question))
+                #print(f"Id question {id_question} updated into the database!")
                 continue
 
             cursor.execute(sql_st.INSERT_QUESTIONS,(category, question, options[0], options[1], options[2], options[3], correct_answer, hint))
@@ -150,7 +161,7 @@ class DataBase:
         conn.commit()
         conn.close()
 
-        print(f"{n_questions_loaded} questions loaded into the database!")
+        #print(f"{n_questions_loaded} questions loaded into the database!")
 
     def check_if_question_exists(self, question):
         """Check if a question already exists in the database."""

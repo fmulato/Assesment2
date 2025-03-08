@@ -617,7 +617,8 @@ class GameScreen:
         self.root.mainloop()
 
     def enable_submit_button(self, index):
-        self.submit_button.configure(state="normal")
+        if self.next_button.cget('state') == 'disabled':
+            self.submit_button.configure(state="normal") # aqui
 
     def get_current_player_name(self):
         return self.player1 if self.logic.current_player == 1 else self.player2
@@ -685,10 +686,10 @@ class ShowRulesDialog(ctk.CTkToplevel):
         title_label = ctk.CTkLabel(
             self,
             text="Welcome to Brain Up: The Learning Adventure!",
-            font=("Arial", 20, "bold"),
+            font=("Arial", 18, "bold"),
             text_color="blue"
         )
-        title_label.grid(row=0, column=0, pady=10, sticky="ew")
+        title_label.grid(row=0, column=0, pady=7, sticky="ew")
 
         # Regras do jogo
         rules_text = (
@@ -697,12 +698,14 @@ class ShowRulesDialog(ctk.CTkToplevel):
             "3. Each player takes turns answering multiple-choice questions.\n\n"
             "4. Questions cover subjects like Science, English, and Māori Vocabulary. More subjects can be added.\n\n"
             "5. You have 15 seconds to answer each question as default, however it can be changed.\n\n"
-            "6. Earn 10 points for each correct answer. Using a hint reduces points by 50%.\n\n"
-            "7. Skip a question twice per game to transfer it to your opponent.\n\n"
-            "8. The final question is bonus: +20 points (+10 points if a hint is used). Lose -10 if wrong. \n\n"
-            "9. The player with the most scores wins.\n\n"
-            "10. Check the ranking to see who has the most scores in all games (only Top 20).\n\n"
-            "11. Have fun and challenge your brain while learning!"
+            "6. Correct answers add 10 points. Incorrect answers subtract 5 points. Time's up? Your points stay as they are.\n\n"
+            "7. Twice per game, you have the option to get a hint, however reduces add points by 50%. Wrong answers are not affected.\n\n"  
+            "8. Twice per game, you have the option to skip a hard question and get a new one. The question will back later.\n\n"
+            "9. The final question is bonus: get +20 points (or +10 points if a hint is used). Lose -10 if wrong. Time's up? Your points stay as they are. \n\n"
+            "10. The player with the most scores wins.\n\n"
+            "11. Check the ranking to see who has the most scores in all games (only Top 20).\n\n"
+            "12. Setup options: time limit per question and number of questions per player can be changed.\n\n"
+            "13. Have fun and challenge your brain while learning!"
         )
 
         # Display rules in a scrollable frame
@@ -714,8 +717,8 @@ class ShowRulesDialog(ctk.CTkToplevel):
             text=rules_text,
             font=("Arial", 14),
             justify="left",
-            wraplength=SIZE_WIDTH - 60
-        ).grid(row=0, column=0, pady=10, sticky="w")
+            wraplength=SIZE_WIDTH - 55
+        ).grid(row=0, column=0, pady=5, sticky="w")
 
         # Close button
         self.close_button = ctk.CTkButton(
@@ -856,7 +859,7 @@ class LastQuestionDialog(ctk.CTkToplevel):
     def __init__(self, parent, player1, player2, current_player):
         super().__init__(parent)
         self.title("Bonus Question")
-        RootUtils.center_window(self, 300, 180)  # size of window
+        RootUtils.center_window(self, 300, 200)  # size of window
         self.grab_set()  # turn on grab set
 
         # find the player of the round
@@ -866,6 +869,7 @@ class LastQuestionDialog(ctk.CTkToplevel):
         message_label = ctk.CTkLabel(self, text=f"{player_of_the_round}, this is your last question!\n\n"
                                                 "Bonus question!\n\n"
                                                 "+20 points if correct\n"
+                                                "(+10 using hint)\n"
                                                 "-10 points if wrong", font=("Arial", 13))
         message_label.pack(pady=20)
 

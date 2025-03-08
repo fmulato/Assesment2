@@ -12,6 +12,8 @@ It provides the following functionality:
 9. Underline current player: Highlights the current player in the GUI.
 """
 import time
+from logging import disable
+
 import pygame
 from utils import Utils
 import gui
@@ -194,6 +196,10 @@ class Logic():
 
         base_points = int(base_points)
 
+        # Disable the option buttons
+        for button in self.gs.option_buttons:
+            button.configure(state="disabled")
+
         if selected_option_int == self.gs.index_mapping[correct_answer]:
             self.gs.result_label.configure(text="Correct!", text_color="blue")
 
@@ -204,7 +210,7 @@ class Logic():
                 self.gs.score_player2 += base_points
                 self.gs.score_player2_label.configure(text=f"Score: {self.gs.score_player2}")
 
-            self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
+            self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue", state="normal")
         else:
             self.gs.result_label.configure(text="Incorrect!", text_color="red")
             penalty = -10 if is_last_round else -5
@@ -216,9 +222,10 @@ class Logic():
                 self.gs.score_player2 += penalty
                 self.gs.score_player2_label.configure(text=f"Score: {self.gs.score_player2}")
 
-            self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue")
+            self.gs.option_buttons[self.gs.index_mapping[correct_answer] - 1].configure(text_color="blue", state="normal")
             if selected_option:
                 self.gs.option_buttons[selected_option_int - 1].configure(text_color="red")
+
 
         self.gs.submit_button.configure(state="disabled")
         self.gs.next_button.configure(state="normal")
@@ -228,6 +235,9 @@ class Logic():
         """Move to the next question."""
         # check if there are more questions available to display
         self.last_question = False
+        for button in self.gs.option_buttons:
+            button.configure(state="normal")
+
         if self.gs.current_question_index < len(self.gs.selected_questions):
             self.gs.current_question_index += 1
             self.gs.submit_button.configure(state="normal")
