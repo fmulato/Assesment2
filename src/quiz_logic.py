@@ -34,6 +34,7 @@ class Logic():
         self.skip_count = {1: 2, 2: 2}  # Each player gets 2 skips
         self.hint_count = {1: 2, 2: 2}  # Each player gets 2 hints
 
+
     def start_timer(self):
         self.timer_active = True
         self.gs.countdown(self.time_limit)
@@ -136,8 +137,7 @@ class Logic():
             self.gs.skip_button.configure(state="normal" if self.skip_count[self.current_player] > 0 else "disabled")
 
             #  NEW: Update Hint button for the new player
-            self.gs.hint_button.configure(
-                text=f"Hint ({self.gs.hint_bal_player1 if self.current_player == 1 else self.gs.hint_bal_player2} left)")
+            self.gs.hint_button.configure(text=f"Hint ({self.gs.hint_bal_player1 if self.current_player == 1 else self.gs.hint_bal_player2} left)")
 
             #  NEW: Enable Hint button if the new player still has hints left
             if (self.current_player == 1 and self.gs.hint_bal_player1 > 0) or (
