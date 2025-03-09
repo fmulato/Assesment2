@@ -103,7 +103,7 @@ SELECT_RANKING = """
                 SELECT p.username, s.age, s.date_time, s.current_score
                 FROM players p
                 JOIN scores s ON p.id_player = s.id_player
-                ORDER BY s.current_score, s.age DESC
+                ORDER BY s.current_score DESC, s.age ASC
                 LIMIT 20
                 """
 

@@ -120,6 +120,7 @@ class Logic():
 
         time.sleep(0.2)
 
+
     def next_turn(self):
         """Move to the next player's turn and update skip & hint buttons."""
         if self.gs.current_question_index < len(self.gs.selected_questions):
@@ -272,6 +273,8 @@ class Logic():
         player2_score = self.gs.score_player2
         db.save_final_score(player2_username, player2_score)
 
+        self.gs.hint_button.configure(state="disabled")
+        self.gs.skip_button.configure(state="disabled")
 
         # Play the winner sound
         if not hasattr(self, 'winner_sound_played'):

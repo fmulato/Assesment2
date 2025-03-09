@@ -66,7 +66,7 @@ class StartScreen:
         self.label_instructions.grid(row=0, column=1, pady=10)
 
         # Player 1:
-        self.label_player1 = ctk.CTkLabel(label_frame, text=f"Player 1:", font=font_instruction, text_color='green')
+        self.label_player1 = ctk.CTkLabel(label_frame, text=f"Player 1 (age):", font=font_instruction, text_color='green')
         self.label_player1.grid(row=1, column=0, pady=5, sticky="ew")
         self.label_player1_name = ctk.CTkLabel(label_frame, text="", font=font_instruction, text_color='green')
         self.label_player1_name.grid(row=2, column=0, pady=5, sticky="ew")
@@ -78,7 +78,7 @@ class StartScreen:
         self.label_vs.grid(row=1, column=1, pady=5, sticky="ew")
 
         # Player 2:
-        self.label_player2 = ctk.CTkLabel(label_frame, text="Player 2:", font=font_instruction, text_color='blue')
+        self.label_player2 = ctk.CTkLabel(label_frame, text="Player 2 (age):", font=font_instruction, text_color='blue')
         self.label_player2.grid(row=1, column=2, pady=5, sticky="ew")
         self.label_player2_name = ctk.CTkLabel(label_frame, text="", font=font_instruction, text_color='blue')  # Label para o nome do jogador 2
         self.label_player2_name.grid(row=2, column=2, pady=5, sticky="ew")
@@ -434,6 +434,8 @@ class GameScreen:
         self.player2 = player2
         self.age2 = age2
 
+        self.seen_last_question = {} # dictionary to keep track of seen last questions
+
         pygame.mixer.init()
 
         # Code for the GameScreen class
@@ -495,7 +497,7 @@ class GameScreen:
         self.skips_bal_player2 = 2
 
         # Player 1
-        self.player1_label = ctk.CTkLabel(self.frame_left, text=f" Player 1:\n\n {self.player1} ({self.age1})", font=font_player, text_color='green')
+        self.player1_label = ctk.CTkLabel(self.frame_left, text=f" Player 1 (age): \n\n {self.player1} ({self.age1})", font=font_player, text_color='green')
         self.player1_label.pack(pady=10)
         self.score_player1 = 0
         self.score_player1_label = ctk.CTkLabel(self.frame_left, text=f" Score: {self.score_player1} ", font=font_score)
@@ -516,7 +518,7 @@ class GameScreen:
         bottom_spacer.pack(side="bottom")
 
         # Player 2
-        self.player2_label = ctk.CTkLabel(self.frame_right, text=f" Player 2:\n\n {self.player2} ({self.age2})", font=font_player, text_color='blue')
+        self.player2_label = ctk.CTkLabel(self.frame_right, text=f" Player 2 (age):\n\n {self.player2} ({self.age2})", font=font_player, text_color='blue')
         self.player2_label.pack(pady=10)
         self.score_player2 = 0
         self.score_player2_label = ctk.CTkLabel(self.frame_right, text=f" Score: {self.score_player2} ", font=font_score)
@@ -600,7 +602,7 @@ class GameScreen:
         self.next_button = ctk.CTkButton(self.frame_center_bottom, text="Next", command=self.logic.next_question, font=("Arial", 14), width=100)
         self.next_button.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
-        self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz", command=self.back_to_start_screen, font=("Arial", 14), width=100)
+        self.restart_button = ctk.CTkButton(self.frame_center_bottom, text="Restart Quiz/Settings", command=self.back_to_start_screen, font=("Arial", 14), width=100)
 
         self.hint_button = ctk.CTkButton(self.frame_center_bottom, text="Hint", command=self.logic.hint, font=("Arial", 14), width=100)
         self.hint_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
@@ -612,6 +614,7 @@ class GameScreen:
 
         self.logic.display_question()
         self.logic.start_timer() # start the timer
+
 
     def run(self):
         self.root.mainloop()
@@ -863,10 +866,11 @@ class LastQuestionDialog(ctk.CTkToplevel):
         self.grab_set()  # turn on grab set
 
         # find the player of the round
-        player_of_the_round = player2 if current_player == 1 else player1
+        #player_of_the_round = player1 if current_player == 1 else player2
+
 
         # Message
-        message_label = ctk.CTkLabel(self, text=f"{player_of_the_round}, this is your last question!\n\n"
+        message_label = ctk.CTkLabel(self, text=f"Tthis is your last question!\n\n"
                                                 "Bonus question!\n\n"
                                                 "+20 points if correct\n"
                                                 "(+10 using hint)\n"
