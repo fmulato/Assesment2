@@ -42,7 +42,8 @@ class Logic():
         self.timer_active = False
 
     def display_question(self):
-        # Check if there are more questions available to display
+        """Display the next question, ensuring skipped questions return to the queue."""
+        # If there are more questions available
         if self.gs.current_question_index < len(self.gs.selected_questions):
             self.gs.countdown(self.time_limit)  # Start the timer
 
@@ -50,59 +51,60 @@ class Logic():
         self.gs.next_button.configure(state="disabled")
         self.gs.submit_button.configure(state="disabled")
 
+        # Ensure we don't go out of bounds
         if self.gs.current_question_index < len(self.gs.selected_questions):
+            # Load the current question
             self.gs.question_number, self.gs.question_data = self.gs.selected_questions[self.gs.current_question_index]
-            is_last_round = self.is_last_round()  # Check if it's the last round
+            is_last_round = self.is_last_round()
 
-            # Update category label with warning if it's the last question
+            # Update category label and highlight if it's the last question
             if is_last_round:
                 self.gs.category_label.configure(text=f"Category: {self.gs.question_data[1]} (Last Question!)")
-                self.play_last_question_sound()  # Play sound for last question
+                self.play_last_question_sound()
             else:
                 self.gs.category_label.configure(text=f"Category: {self.gs.question_data[1]}")
 
+            # Display the question number (to maintain consistent numbering)
             self.gs.question_label.configure(text=f"{self.gs.current_question_index + 1}. {self.gs.question_data[2]}")
 
-            # Extract options and shuffle them
+            # Extract and shuffle options
             options = self.gs.question_data[3:7]
             correct_answer = self.gs.question_data[7]
-
-            # Shuffle answers using Utils
             utils = Utils()
             shuffled_options, new_correct_answer, index_mapping = utils.shuffle_answers(options, correct_answer)
-            self.gs.index_mapping = index_mapping  # store the index mapping for later use
+            self.gs.index_mapping = index_mapping
 
+            # Update buttons with shuffled options
             for i, option in enumerate(shuffled_options):
                 self.gs.option_buttons[i].configure(text=option, text_color="black")
                 self.gs.option_buttons[i]._value = str(i + 1)
 
-            # Update the correct answer index in question data
-            self.gs.question_data = list(self.gs.question_data)  # Convert tuple to list
-            self.gs.question_data[7] = new_correct_answer  # Update correct answer position
+            # Update correct answer position
+            self.gs.question_data = list(self.gs.question_data)
+            self.gs.question_data[7] = new_correct_answer
 
+            # Reset UI
             self.gs.options_var.set(None)
             self.gs.result_label.configure(text="")
             self.gs.winner_label.grid_forget()
 
-        else:  # No more questions available
+        else:
+            # No more questions available
             self.gs.question_label.configure(text="No more questions!")
             self.gs.restart_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
-
-            # Stop the timer and sounds
             self.stop_timer()
             self.gs.tic_tac_sound.stop()
             self.gs.buzz_sound.stop()
-
             self.determine_quiz_winner()
 
+            # Hide all buttons
             for button in self.gs.option_buttons:
                 button.grid_forget()
             self.gs.submit_button.grid_forget()
-            self.gs.result_label.configure(text="")
             self.gs.result_label.grid_forget()
-            self.gs.next_button.forget()
+            self.gs.next_button.grid_forget()
 
-        # Update the turn label
+        # Update turn label
         for i, button in enumerate(self.gs.option_buttons):
             button.configure(command=lambda i=i: self.gs.enable_submit_button(i))
 
@@ -336,25 +338,38 @@ class Logic():
             self.gs.hint_button.configure(state="disabled")
 
     def skip(self):
-        """ Allow the current player to skip a question up to two times per game while keeping their turn. """
+        """Allow the current player to skip a question up to two times per game while keeping their turn."""
         if self.skip_count[self.current_player] > 0:
             self.skip_count[self.current_player] -= 1  # Reduce skip count
-            self.display_question()  # Show a new question but keep the turn
 
-            #  Update the Skips Left label for the correct player
+            # Save the skipped question temporarily
+            skipped_question = self.gs.selected_questions.pop(self.gs.current_question_index)
+
+            # Append it back to the end of the question list
+            self.gs.selected_questions.append(skipped_question)
+
+            # Set flag to indicate a skipped question
+            self.skip_flag = True
+
+            # Move to the next question while keeping the turn
+            self.display_question()
+
+            # Update Skips Left label
             if self.current_player == 1:
                 self.gs.skips_bal_player1_label.configure(text=f" Skips left: {self.skip_count[1]}")
             else:
                 self.gs.skips_bal_player2_label.configure(text=f" Skips left: {self.skip_count[2]}")
 
-            #  Update the Skip button text to reflect the current player's skips
+            # Update the Skip button text
             self.gs.skip_button.configure(text=f"Skip ({self.skip_count[self.current_player]} left)")
 
-            #  Disable the button if the current player has no skips left
+            # Disable the button if the player has no skips left
             if self.skip_count[self.current_player] == 0:
                 self.gs.skip_button.configure(state="disabled")
+
         else:
             CustomPopup("Warning", f"{self.get_current_player_name()} has no skips left.")
+
 
 
 
