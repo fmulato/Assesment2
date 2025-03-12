@@ -13,8 +13,29 @@ SIZE_HEIGHT = 600
 
 
 class Utils:
+    """
+    Utility functions for the Brain Up! game.
+    """
 
-    def select_random_elements(self, elements, n) -> List[Tuple[int, any]]:
+    def select_random_elements(self, elements: List[any], n: int) -> List[Tuple[int, any]]:
+        """
+        Select n random elements from a list, tuple, or set, and return their indices and values.
+
+        Args:
+            elements (List[any]): A collection of elements (list, tuple, or set).
+            n (int): The number of random elements to select.
+
+        Returns:
+            List[Tuple[int, any]]: A list of tuples with indices (1-based) and the selected values.
+
+        Raises:
+            ValueError: If 'elements' is not a collection or fewer elements exist than requested.
+        """
+        if not isinstance(elements, (list, tuple, set)):
+            raise ValueError("The 'elements' argument must be a list, tuple, or set.")
+
+        if n > len(elements):
+            raise ValueError("The number of selected elements (n) cannot be greater than the total")
 
         if not isinstance(elements, (list, tuple, set)):
             raise ValueError("The 'elements' argument must be a list, tuple, or set.")
@@ -53,7 +74,10 @@ class CustomPopup(ctk.CTkToplevel):
         window_height = 150
         gui.center_window(self, window_width, window_height)
 
-        self.grab_set()  # Make modal
+        try:
+            self.grab_set()  # Make modal
+        except AttributeError:
+            pass
 
         label = ctk.CTkLabel(self, text=message, wraplength=250)
         label.pack(pady=10)

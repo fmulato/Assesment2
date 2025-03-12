@@ -10,6 +10,8 @@ It provides the following functionality:
 7. JSON data loading: Loads questions into the database from a JSON file.
 8. Question existence check: Checks if a question already exists in the database.
 9. Question loading: Fetches all questions from the database.
+10. Question saving: Adds a new question to the database.
+11. Final score saving: Save the player's final score in the database with their age.
 """
 
 import sqlite3
@@ -22,6 +24,7 @@ import sql_statement as sql_st
 DB_PATH = "brainup.db"
 
 class DataBase:
+    """ Manages user data, players and quiz questions in a SQLite database. """
     def __init__(self):
         self.create_tables()
 
@@ -59,7 +62,7 @@ class DataBase:
         existing_user = cursor.fetchone()
 
         if existing_user:
-            CustomPopup(self,"Error", "Username already exists. Try a different one.")
+            CustomPopup("Error", "Username already exists. Try a different one.")
             return False
 
         try:
@@ -177,6 +180,7 @@ class DataBase:
         return result is not None
 
     def load_questions(self):
+        """Fetch all questions from the database."""
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
@@ -188,6 +192,7 @@ class DataBase:
         return questions
 
     def get_ranking(self):
+        """Fetch the ranking from the database."""
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
@@ -199,6 +204,7 @@ class DataBase:
         return ranking
 
     def update_setup(self, time_limit, num_questions):
+        """Update the setup in the database."""
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
@@ -209,6 +215,7 @@ class DataBase:
         connection.close()
 
     def update_global_settings(self):
+        """Update the global settings in the database."""
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 
@@ -219,6 +226,7 @@ class DataBase:
         return result
 
     def delete_player(self, username):
+        """Delete a player from the database."""
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
 

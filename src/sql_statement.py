@@ -135,3 +135,8 @@ UPDATE_QUESTIONS = """
                 WHERE id_question = ?
                 """
 
+### CREATE EXECUTABLE FILE ### will create at the directory dist. Assure that questions.json file is in the same directory of executable
+# pyinstaller --onefile --add-data "sounds;sounds" --name 'brainup' main.py
+# pyinstaller --onefile --add-data "sounds/bonus.mp3;sounds" --add-data "sounds/tic-tac.wav;sounds" --add-data "sounds/buzz.mp3;sounds" --add-data "sounds/winner.wav;sounds" --name "brainup" main.py
+
+

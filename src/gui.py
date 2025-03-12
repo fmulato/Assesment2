@@ -1,22 +1,27 @@
 """
 This module contains the main GUI classes for the Brain Up! quiz game.
-The StartScreen class is the first window where players are selected.
-The GameScreen class is where the game is played.
+
+Classes:
+- StartScreen: The first window where players are selected. Manages player registration, setups and starts the game.
+- GameScreen: The main game window where the quiz is played. Manages the display of questions, options, and results.
+
 """
 
-import customtkinter as ctk
-from CTkMessagebox import CTkMessagebox
-import tkinter.filedialog as filedialog
-import pygame
 import datetime
+import sys
+import tkinter.filedialog as filedialog
+from CTkMessagebox import CTkMessagebox
+import customtkinter as ctk
+import pygame
 import quiz_logic as ql
 from database_management import DataBase
 from utils import CustomPopup, Utils, SIZE_WIDTH, SIZE_HEIGHT
-import sql_statement as sql_st
 
 class RootUtils:
+    """Utility class for centering the main window on the screen."""
     @staticmethod
     def center_window(root, width, height):
+        """Center the main window on the screen."""
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
         x = (screen_width // 2) - (width // 2)
@@ -26,6 +31,7 @@ class RootUtils:
         root.maxsize(width, height)
 
 class StartScreen:
+    """The first window where players are selected. Manages player registration, setups and starts the game."""
     def __init__(self):
         self.root = ctk.CTk()
         self.root.title("Welcome to Brain Up! - Registration")
@@ -130,13 +136,14 @@ class StartScreen:
         self.root.mainloop()
 
     def exit(self):
-        quit()
+        """ Exits the game. """
+        sys.exit()
 
-    def update_questions(self):
-        """Reload questions.json and update the database."""
-        db = DataBase()
-        db.load_db_from_json("questions.json")  # Load questions from JSON
-        CustomPopup("Success", "Questions database has been updated!")
+    # def update_questions(self):
+    #     """Reload questions.json and update the database."""
+    #     db = DataBase()
+    #     db.load_db_from_json("questions.json")  # Load questions from JSON
+    #     CustomPopup("Success", "Questions database has been updated!")
 
     def update_new_questions(self):
         """Open a file dialog to choose a JSON file and update the questions."""
@@ -173,6 +180,7 @@ class StartScreen:
 
 
     def display_player_buttons(self):
+        """Display player buttons."""
         # Clear the button frame, before adding new buttons
         for widget in self.button_frame.winfo_children():
             widget.destroy()
@@ -273,6 +281,7 @@ class StartScreen:
             self.label_player2_name.configure(text="")
 
     def add_new_name(self):
+        """Open the Add Name dialog."""
         AddNameDialog(self.root, self.db_manager, self)
 
     def delete_player(self):
@@ -330,7 +339,7 @@ class StartScreen:
         db = DataBase()
         questions = db.load_questions()
         if not questions:  # If no questions are found
-            CustomPopup("Error!", "No questions are available. Please install 'questions.json'.")
+            CustomPopup("Error!", "No questions are available. Please load questions from 'questions.json'.")
             return
 
 
@@ -405,6 +414,7 @@ class AddNameDialog(ctk.CTkToplevel):
         #self.submit_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
     def save_birthday(self):
+        """ Save the selected birthday as a string in the format "YYYY-MM-DD" """
         birthday_entry = f"{self.selected_year.get()}-{self.months.index(self.selected_month.get()) + 1:02}-{self.selected_day.get()}"
         return birthday_entry
 
@@ -423,6 +433,7 @@ class AddNameDialog(ctk.CTkToplevel):
             self.withdraw()  # Hide the pop-up after success
 
 class GameScreen:
+    """ Game Screen Class """
 
     def __init__(self, root, player1='Player 1', age1="", player2='Player 2', age2=""):
         # Create the main window
@@ -507,10 +518,10 @@ class GameScreen:
 
 
         # Hints and Skips balance
-        self.hint_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Hints left: {self.hint_bal_player1}", font=font_score, text_color=("green"))
+        self.hint_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Hints left: {self.hint_bal_player1}", font=font_score, text_color="green")
 
         self.hint_bal_player1_label.pack(pady=5, side="bottom")
-        self.skips_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Skips left: {self.skips_bal_player1}", font=font_score, text_color=("green"))
+        self.skips_bal_player1_label = ctk.CTkLabel(self.frame_left, text=f" Skips left: {self.skips_bal_player1}", font=font_score, text_color="green")
         self.skips_bal_player1_label.pack(pady=5, side="bottom")
         self.skips_bal_player1_label.pack(pady=5, side="bottom")
 
@@ -527,10 +538,10 @@ class GameScreen:
         self.hint_bal_player2 = 2
 
         # Hints and Skips balance
-        self.hint_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Hints left: {self.hint_bal_player2}", font=font_score, text_color=("blue"))
+        self.hint_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Hints left: {self.hint_bal_player2}", font=font_score, text_color="blue")
 
         self.hint_bal_player2_label.pack(pady=5, side="bottom")
-        self.skips_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Skips left: {self.skips_bal_player2}", font=font_score, text_color=("blue"))
+        self.skips_bal_player2_label = ctk.CTkLabel(self.frame_right, text=f" Skips left: {self.skips_bal_player2}", font=font_score, text_color="blue")
         self.skips_bal_player2_label.pack(pady=5, side="bottom")
 
         # Questions
@@ -617,16 +628,20 @@ class GameScreen:
 
 
     def run(self):
+        """Runs the GUI."""
         self.root.mainloop()
 
     def enable_submit_button(self, index):
+        """Enables the submit button and disables the next button."""
         if self.next_button.cget('state') == 'disabled':
             self.submit_button.configure(state="normal") # aqui
 
     def get_current_player_name(self):
+        """Returns the name of the current player."""
         return self.player1 if self.logic.current_player == 1 else self.player2
 
     def countdown(self, count):
+        """Start the countdown timer."""
         pygame.mixer.stop()
 
         # Check if the timer should be active
@@ -649,6 +664,7 @@ class GameScreen:
         self.tic_tac_sound.play(-1)
 
         def update_countdown(remaining):
+            """Updates the countdown timer."""
             if remaining > 0:
                 self.timer.configure(text=str(remaining))
                 self.timer.after(1000, update_countdown, remaining - 1)
@@ -664,7 +680,8 @@ class GameScreen:
         update_countdown(count)
 
     def exit(self):
-        quit()
+        """ Exits the game. """
+        sys.exit()
 
     def back_to_start_screen(self):
         """ Back to the start screen to select new players. """
@@ -685,7 +702,7 @@ class ShowRulesDialog(ctk.CTkToplevel):
         self.grid_rowconfigure(2, weight=0)  # Espaço para o botão "Close"
         self.grid_columnconfigure(0, weight=1)
 
-        # Título: Welcome to Brain Up: The Learning Adventure!
+        # Title: Welcome to Brain Up: The Learning Adventure!
         title_label = ctk.CTkLabel(
             self,
             text="Welcome to Brain Up: The Learning Adventure!",
@@ -694,7 +711,7 @@ class ShowRulesDialog(ctk.CTkToplevel):
         )
         title_label.grid(row=0, column=0, pady=7, sticky="ew")
 
-        # Regras do jogo
+        # Rules of the game
         rules_text = (
             "1. Select two players to start the game.\n\n"
             "2. Add new name if needed or delete it.\n\n"
@@ -866,11 +883,11 @@ class LastQuestionDialog(ctk.CTkToplevel):
         self.grab_set()  # turn on grab set
 
         # find the player of the round
-        #player_of_the_round = player1 if current_player == 1 else player2
+        player_of_the_round = player1 if current_player == 1 else player2
 
 
         # Message
-        message_label = ctk.CTkLabel(self, text=f"Tthis is your last question!\n\n"
+        message_label = ctk.CTkLabel(self, text="This is your last question!\n\n"
                                                 "Bonus question!\n\n"
                                                 "+20 points if correct\n"
                                                 "(+10 using hint)\n"

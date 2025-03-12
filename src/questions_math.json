@@ -3,30 +3,35 @@
     "category": "Maths",
     "question": "What is the result of 45 + 37?",
     "options": ["72", "82", "83", "73"],
-    "correct_answer": "2"
+    "correct_answer": "2",
+    "hint": "Starts with 8"
   },
   {
     "category": "Maths",
     "question": "If João has 63 stickers and loses 28, how many does he have left?",
     "options": ["45", "35", "40", "30"],
-    "correct_answer": "2"
+    "correct_answer": "2",
+    "hint": "It is even"
   },
   {
     "category": "Maths",
     "question": "What is 7 multiplied by 6?",
     "options": ["36", "42", "48", "35"],
-    "correct_answer": "2"
+    "correct_answer": "2",
+    "hint": "larger than 40 and smaller than 50"
   },
   {
     "category": "Maths",
     "question": "What is 56 divided by 8?",
     "options": ["6", "7", "8", "9"],
-    "correct_answer": "2"
+    "correct_answer": "2",
+    "hint": "It is not odd"
   },
   {
     "category": "Maths",
     "question": "Maria had 15 apples. She gave 4 to her friend and ate 3. How many are left?",
     "options": ["8", "9", "10", "11"],
-    "correct_answer": "1"
+    "correct_answer": "1",
+    "hint": "Maria losts 7 apples in total"
   }
 ]

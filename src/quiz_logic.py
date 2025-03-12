@@ -12,7 +12,6 @@ It provides the following functionality:
 9. Underline current player: Highlights the current player in the GUI.
 """
 import time
-from logging import disable
 
 import pygame
 from utils import Utils
