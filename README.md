@@ -24,14 +24,14 @@ Python installation required.
 Ensure that you have Python 3.x installed on your system. 
 If you don't have Python installed, please download it from python.org.
 
-a-Unzip te file Brain_up_1.0.0.zip
+a-Unzip te file Brain_up_1.0.0.zip  
 b-Create a virtual environment before installing dependencies. At Python Terminal (or Anconda PowerShell) run:
 	 python -m venv name_venv  
-c-Activate it with:
+c-Activate it with:  
 	name_venv\Scripts\activate (Windows) or  conda activate name_venv  
-d-Change the path to location where is the file main.py:
+d-Change the path to location where is the file main.py:  
 	cd C:\Users\....\
-e-Install the required Python packages by running the following command and the requirements.txt file provided: 
+e-Install the required Python packages by running the following command and the requirements.txt file provided:   
 	pip install -r requirements.txt  
 f-Run the application using the following command on Terminal (or Anconda PowerShell): 
 	python main.py
