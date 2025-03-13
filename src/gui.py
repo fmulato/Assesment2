@@ -403,7 +403,7 @@ class AddNameDialog(ctk.CTkToplevel):
 
         # Combo box for Year
         current_year = datetime.datetime.now().year
-        self.years = [str(year) for year in range(current_year - 15, current_year - 8)]
+        self.years = [str(year) for year in range(current_year - 13, current_year - 8)]
         self.selected_year = ctk.StringVar(value=self.years[0])
         self.year_menu = ctk.CTkOptionMenu(self, variable=self.selected_year, values=self.years, width=60)
         self.year_menu.grid(row=2, column=1, padx=(110, 0), pady=5, sticky="w")
